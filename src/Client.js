@@ -48,7 +48,7 @@ class Client {
      */
     setAPIToken(apiToken) {
         if (typeof apiToken !== "string") {
-            throw new Error("Invalid API token, expected string, but got " + typeof apiToken);
+            throw new TypeError("Invalid API token, expected string, but got " + typeof apiToken);
         }
 
         this._apiToken = apiToken;
@@ -63,7 +63,7 @@ class Client {
      */
     setUserAgent(userAgent) {
         if (typeof userAgent !== "string") {
-            throw new Error("Invalid user agent, expected string, but got " + typeof userAgent);
+            throw new TypeError("Invalid user agent, expected string, but got " + typeof userAgent);
         }
 
         this._userAgent = userAgent;
