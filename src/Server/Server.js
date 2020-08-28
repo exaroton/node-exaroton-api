@@ -7,7 +7,13 @@ const RestartServerRequest = require('../Request/Server/RestartServerRequest');
 const ExecuteServerCommandRequest = require('../Request/Server/ExecuteServerCommandRequest');
 
 class Server {
-    STATUS = ServerStatus;
+    /**
+     * Shorthand to get server status constants
+     *
+     * @return {{LOADING: number, STARTING: number, SAVING: number, RESTARTING: number, PENDING: number, PREPARING: number, STOPPING: number, OFFLINE: number, ONLINE: number, CRASHED: number}}
+     * @constructor
+     */
+    get STATUS() { return ServerStatus };
 
     /**
      * @type {Client}
