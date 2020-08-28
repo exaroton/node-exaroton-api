@@ -65,6 +65,13 @@ class Server {
     port = null;
 
     /**
+     * Check if this an owned or a shared server
+     *
+     * @type {boolean}
+     */
+    shared = false;
+
+    /**
      * Server software
      *
      * @type {Software}
@@ -168,6 +175,7 @@ class Server {
         this.status = typeof server.status !== "undefined" ? server.status : null;
         this.host = typeof server.host !== "undefined" ? server.host : null;
         this.port = typeof server.port !== "undefined" ? server.port : null;
+        this.shared = typeof server.shared !== "undefined" ? server.shared : null;
 
         this.software = null;
         if (typeof server.software === "object") {
