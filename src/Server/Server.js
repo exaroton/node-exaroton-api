@@ -6,14 +6,14 @@ const StopServerRequest = require('../Request/Server/StopServerRequest');
 const RestartServerRequest = require('../Request/Server/RestartServerRequest');
 const ExecuteServerCommandRequest = require('../Request/Server/ExecuteServerCommandRequest');
 
-/**
- * @type {Client}
- * @private
- */
-let _client;
-
 class Server {
     STATUS = ServerStatus;
+
+    /**
+     * @type {Client}
+     * @private
+     */
+    #client;
 
     /**
      * Unique server ID
@@ -85,7 +85,7 @@ class Server {
      * @param {string} id
      */
     constructor(client, id) {
-        _client = client;
+        this.#client = client;
         this.id = id;
     }
 
@@ -96,7 +96,7 @@ class Server {
      * @throws {RequestError}
      */
     async get() {
-        let response = await _client.request(new GetServerRequest(this.id));
+        let response = await this.#client.request(new GetServerRequest(this.id));
         this.setFromObject(response.getData());
         return this;
     }
@@ -108,7 +108,7 @@ class Server {
      * @throws {RequestError}
      */
     async start() {
-        return _client.request(new StartServerRequest(this.id));
+        return this.#client.request(new StartServerRequest(this.id));
     }
 
     /**
@@ -118,7 +118,7 @@ class Server {
      * @throws {RequestError}
      */
     async stop() {
-        return _client.request(new StopServerRequest(this.id));
+        return this.#client.request(new StopServerRequest(this.id));
     }
 
     /**
@@ -128,7 +128,7 @@ class Server {
      * @throws {RequestError}
      */
     async restart() {
-        return _client.request(new RestartServerRequest(this.id));
+        return this.#client.request(new RestartServerRequest(this.id));
     }
 
     /**
@@ -138,7 +138,7 @@ class Server {
      * @return {Promise<Response>}
      */
     async executeCommand(command) {
-        return _client.request(new ExecuteServerCommandRequest(this.id, command));
+        return this.#client.request(new ExecuteServerCommandRequest(this.id, command));
     }
 
     /**

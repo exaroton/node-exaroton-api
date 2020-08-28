@@ -21,7 +21,7 @@ class Client {
      * @type {string|null}
      * @private
      */
-    _apiToken = null;
+    #apiToken = null;
 
     /**
      * User agent sent with all requests
@@ -29,7 +29,7 @@ class Client {
      * @type {string}
      * @private
      */
-    _userAgent = "node-exaroton-api@" + packageConfig.version;
+    #userAgent = "node-exaroton-api@" + packageConfig.version;
 
     /**
      * Client constructor
@@ -51,7 +51,7 @@ class Client {
             throw new TypeError("Invalid API token, expected string, but got " + typeof apiToken);
         }
 
-        this._apiToken = apiToken;
+        this.#apiToken = apiToken;
         return this;
     }
 
@@ -66,7 +66,7 @@ class Client {
             throw new TypeError("Invalid user agent, expected string, but got " + typeof userAgent);
         }
 
-        this._userAgent = userAgent;
+        this.#userAgent = userAgent;
         return this;
     }
 
@@ -81,8 +81,8 @@ class Client {
         request.client = this;
         const url = this.baseURL + request.getEndpoint();
         const headers = Object.assign({
-            "authorization": "Bearer " + this._apiToken,
-            "user-agent": this._userAgent
+            "authorization": "Bearer " + this.#apiToken,
+            "user-agent": this.#userAgent
         }, request.headers);
 
         let gotOptions = {
