@@ -1,14 +1,17 @@
 {
   "name": "exaroton",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "exaroton API client",
+  "homepage": "https://exaroton.com",
   "main": "index.js",
   "repository": "github:exaroton/node-exaroton-api",
   "author": "Matthias Neid",
   "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "form-data": "^3.0.0",
-    "got": "^11.5.2",
-    "node": ">=12.0.0"
+    "got": "^11.5.2"
   }
 }
