@@ -1,6 +1,6 @@
 {
   "name": "exaroton",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "exaroton API client",
   "main": "index.js",
   "repository": "github:exaroton/node-exaroton-api",
