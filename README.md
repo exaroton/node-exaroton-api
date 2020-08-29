@@ -1,7 +1,7 @@
 # Node.js exaroton API client
 
 ### About
-The exaroton API allows automated access to same basic functionalities of your game servers, such as starting or stopping 
+The exaroton API allows automated access to some basic functionalities of your game servers, such as starting or stopping 
 the server. You can read the API documentation here: https://support.exaroton.com/hc/en-us/articles/360011926177
 
 This is the official Node.js implementation of this API.
@@ -21,7 +21,7 @@ const {Client} = require('exaroton');
 
 const client = new Client(token);
 ```
-*Remember to keep your token secret and don't add it to any private or public code repository.*
+*Remember to keep your token secret and don't add it to any private or public code repositories.*
 
 #### List servers
 ```js
@@ -58,10 +58,10 @@ if (server.hasStatus(server.STATUS.ONLINE)) {
 }
 ```
 The server status is an `integer` as described in the [documentation](https://support.exaroton.com/hc/en-us/articles/360011926177#servers). You can use
-the [ServerStatus](./src/Server/ServerStatus.js) object, which you can require on its own (`const {ServerStatus} = require('exaroton')`) or via the
+the [ServerStatus](./src/Server/ServerStatus.js) object, which you can require on its own `const {ServerStatus} = require('exaroton')` or via the
 shorthand `server.STATUS` property.
 
-#### Start/Stop/Restart the server
+#### Start/stop/restart the server
 ```js
 try {
     await server.start();
