@@ -1,4 +1,5 @@
 const Software = require('./Software');
+const Players = require('./Players');
 const ServerStatus = require('./ServerStatus');
 const GetServerRequest = require('../Request/Server/GetServerRequest');
 const StartServerRequest = require('../Request/Server/StartServerRequest');
@@ -12,7 +13,9 @@ class Server {
      *
      * @return {{LOADING: number, STARTING: number, SAVING: number, RESTARTING: number, PENDING: number, PREPARING: number, STOPPING: number, OFFLINE: number, ONLINE: number, CRASHED: number}}
      */
-    get STATUS() { return ServerStatus };
+    get STATUS() {
+        return ServerStatus
+    };
 
     /**
      * @type {Client}
@@ -82,6 +85,13 @@ class Server {
      * @type {Software}
      */
     software;
+
+    /**
+     * Player data
+     *
+     * @type {Players}
+     */
+    players;
 
     /**
      * Server constructor
@@ -185,6 +195,11 @@ class Server {
         this.software = null;
         if (typeof server.software === "object") {
             this.software = new Software(server.software);
+        }
+
+        this.players = null;
+        if (typeof server.players === "object") {
+            this.players = new Players(server.players);
         }
         return this;
     }
