@@ -1,6 +1,7 @@
 const got = require('got');
 
 const Server = require('./Server/Server');
+const Account = require('./Account/Account');
 const RequestStatusError = require('./Error/RequestStatusError');
 const RequestBodyError = require('./Error/RequestBodyError');
 const GetServersRequest = require('./Request/GetServersRequest');
@@ -118,6 +119,16 @@ class Client {
      */
     async getServers() {
         return (await this.request(new GetServersRequest)).getData();
+    }
+
+    /**
+     * Get account info for the current account
+     *
+     * @throws {RequestError}
+     * @returns {Promise<Account>}
+     */
+    async getAccount() {
+        return (await new Account(this).get());
     }
 
     /**

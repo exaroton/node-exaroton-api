@@ -23,6 +23,14 @@ const client = new Client(token);
 ```
 *Remember to keep your token secret and don't add it to any private or public code repositories.*
 
+#### Get account info
+````js
+let account = await client.getAccount();
+console.log("My account is " + account.name + " and I have " + account.credits + " credits.");
+````
+
+The account object contains the fields and information as listed in the [documentation](https://support.exaroton.com/hc/en-us/articles/360011926177#account).
+
 #### List servers
 ```js
 let servers = await client.getServers();
