@@ -89,3 +89,25 @@ try {
     console.error(e.message);
 }
 ```
+
+#### Get the server logs
+```js
+try {
+    let logs = await server.getLogs();
+    console.log(logs);
+} catch (e) {
+    console.error(e.message);
+}
+```
+*This is cached and will not return the latest updates immediately. It's also not possible to get the server logs while the server is loading, stopping or saving.*
+
+#### Share the server logs via mclo.gs
+```js
+try {
+    let url = await server.shareLogs();
+    console.log(url);
+} catch (e) {
+    console.error(e.message);
+}
+```
+*This is cached and will not return the latest updates immediately. It's also not possible to share the server logs while the server is loading, stopping or saving.*

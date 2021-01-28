@@ -6,6 +6,8 @@ const StartServerRequest = require('../Request/Server/StartServerRequest');
 const StopServerRequest = require('../Request/Server/StopServerRequest');
 const RestartServerRequest = require('../Request/Server/RestartServerRequest');
 const ExecuteServerCommandRequest = require('../Request/Server/ExecuteServerCommandRequest');
+const GetServerLogsRequest = require('../Request/Server/GetServerLogsRequest');
+const ShareServerLogsRequest = require('../Request/Server/ShareServerLogsRequest');
 
 class Server {
     /**
@@ -154,6 +156,30 @@ class Server {
      */
     async executeCommand(command) {
         return this.#client.request(new ExecuteServerCommandRequest(this.id, command));
+    }
+
+    /**
+     * Get the content of the server logs
+     *
+     * This is cached and will not return the latest updates immediately.
+     *
+     * @returns {Promise<string>}
+     */
+    async getLogs() {
+        let response = await this.#client.request(new GetServerLogsRequest(this.id));
+        return response.getData().content;
+    }
+
+    /**
+     * Upload the content of the server logs to mclo.gs
+     *
+     * Returns the URL of the logs on mclo.gs
+     *
+     * @returns {Promise<string>}
+     */
+    async shareLogs() {
+        let response = await this.#client.request(new ShareServerLogsRequest(this.id));
+        return response.getData().url;
     }
 
     /**

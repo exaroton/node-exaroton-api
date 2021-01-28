@@ -75,7 +75,7 @@ class Client {
      * Send a {Request} to the API and get a {Response}
      *
      * @param {Request} request
-     * @return {Response}
+     * @return {Promise<Response>}
      * @throws {RequestError}
      */
     async request(request) {
