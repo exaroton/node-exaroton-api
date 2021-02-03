@@ -8,6 +8,8 @@ const RestartServerRequest = require('../Request/Server/RestartServerRequest');
 const ExecuteServerCommandRequest = require('../Request/Server/ExecuteServerCommandRequest');
 const GetServerLogsRequest = require('../Request/Server/GetServerLogsRequest');
 const ShareServerLogsRequest = require('../Request/Server/ShareServerLogsRequest');
+const GetServerOptionRequest = require('../Request/Server/GetServerOptionRequest');
+const SetServerOptionRequest = require('../Request/Server/SetServerOptionRequest');
 
 class Server {
     /**
@@ -180,6 +182,48 @@ class Server {
     async shareLogs() {
         let response = await this.#client.request(new ShareServerLogsRequest(this.id));
         return response.getData().url;
+    }
+
+    /**
+     * Get the assigned max server RAM in GB
+     *
+     * @return {Promise<int>}
+     */
+    getRAM() {
+        return this.getOption("ram");
+    }
+
+    /**
+     * Set the assigned max server RAM in GB
+     *
+     * @param {int} ram
+     * @return {Promise<Response>}
+     */
+    setRAM(ram) {
+        return this.setOption("ram", ram);
+    }
+
+
+    /**
+     * Get a server option
+     *
+     * @param option
+     * @return {Promise<*>}
+     */
+    async getOption(option) {
+        let response = await this.#client.request(new GetServerOptionRequest(this.id, option));
+        return response.getData()[option];
+    }
+
+    /**
+     * Set a server option
+     *
+     * @param option
+     * @param value
+     * @return {Promise<Response>}
+     */
+    setOption(option, value) {
+        return this.#client.request(new SetServerOptionRequest(this.id, option, value));
     }
 
     /**

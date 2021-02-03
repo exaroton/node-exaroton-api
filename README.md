@@ -111,3 +111,25 @@ try {
 }
 ```
 *This is cached and will not return the latest updates immediately. It's also not possible to share the server logs while the server is loading, stopping or saving.*
+
+#### Get the server RAM
+```js
+try {
+    let ram = await server.getRAM();
+    console.log("This server has " + ram + " GB RAM.");
+} catch (e) {
+    console.error(e.message);
+}
+```
+The amount of RAM is returned in full GiB.
+
+#### Set the server RAM
+```js
+try {
+    await server.setRAM(8);
+} catch (e) {
+    console.error(e.message);
+}
+```
+The RAM is set in full GiB and has to be between 2 and 16.
+
