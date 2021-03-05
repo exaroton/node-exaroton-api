@@ -1,7 +1,7 @@
 const ServerRequest = require('./ServerRequest');
 
 class GetServerOptionRequest extends ServerRequest {
-    endpoint = "server/{id}/options/{option}/";
+    endpoint = "servers/{id}/options/{option}/";
 
     /**
      * GetServerOptionRequest constructor

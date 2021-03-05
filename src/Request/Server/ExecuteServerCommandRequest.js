@@ -1,7 +1,7 @@
 const ServerRequest = require('./ServerRequest');
 
 class ExecuteServerCommandRequest extends ServerRequest {
-    endpoint = "server/{id}/command";
+    endpoint = "servers/{id}/command";
     method = "POST";
 
     /**

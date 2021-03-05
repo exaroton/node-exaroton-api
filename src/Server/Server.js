@@ -1,6 +1,7 @@
 const Software = require('./Software');
 const Players = require('./Players');
 const ServerStatus = require('./ServerStatus');
+const PlayerList = require('./PlayerList');
 const GetServerRequest = require('../Request/Server/GetServerRequest');
 const StartServerRequest = require('../Request/Server/StartServerRequest');
 const StopServerRequest = require('../Request/Server/StopServerRequest');
@@ -10,6 +11,7 @@ const GetServerLogsRequest = require('../Request/Server/GetServerLogsRequest');
 const ShareServerLogsRequest = require('../Request/Server/ShareServerLogsRequest');
 const GetServerOptionRequest = require('../Request/Server/GetServerOptionRequest');
 const SetServerOptionRequest = require('../Request/Server/SetServerOptionRequest');
+const GetPlayerListsRequest = require('../Request/Server/PlayerLists/GetPlayerListsRequest');
 
 class Server {
     /**
@@ -96,6 +98,13 @@ class Server {
      * @type {Players}
      */
     players;
+
+    /**
+     * Player lists
+     *
+     * @type {{{string}: PlayerList}}
+     */
+    #playerLists = {};
 
     /**
      * Server constructor
@@ -224,6 +233,35 @@ class Server {
      */
     setOption(option, value) {
         return this.#client.request(new SetServerOptionRequest(this.id, option, value));
+    }
+
+    /**
+     * Get all player lists available for the server
+     *
+     * @returns {Promise<PlayerList[]>}
+     */
+    async getPlayerLists() {
+        let lists = (await this.#client.request(new GetPlayerListsRequest(this.id))).getData();
+        this.#playerLists = {};
+        for (let list of lists) {
+            list.setServer(this);
+            this.#playerLists[list.getName()] = list;
+        }
+        return lists;
+    }
+
+    /**
+     * Get a player list by name
+     *
+     * @param name
+     * @returns {PlayerList}
+     */
+    getPlayerList(name) {
+        if (typeof this.#playerLists[name] !== "undefined") {
+            return this.#playerLists[name];
+        }
+        this.#playerLists[name] = new PlayerList(name).setServer(this).setClient(this.#client);
+        return this.#playerLists[name];
     }
 
     /**

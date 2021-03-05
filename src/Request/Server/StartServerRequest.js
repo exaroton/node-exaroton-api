@@ -1,7 +1,7 @@
 const ServerRequest = require('./ServerRequest');
 
 class StartServerRequest extends ServerRequest {
-    endpoint = "server/{id}/start";
+    endpoint = "servers/{id}/start";
 }
 
 module.exports = StartServerRequest;
