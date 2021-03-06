@@ -133,3 +133,65 @@ try {
 ```
 The RAM is set in full GiB and has to be between 2 and 16.
 
+#### Player lists
+A player list is a list of players such as the whitelist, ops or bans.
+Player list entries are usually usernames, but might be something else, e.g. IPs in the banned-ips list.
+All player list operations are storage operations that might take a while, so try to reduce the amount of requests and combine actions when possible (e.g. adding/deleting multiple entries at once).
+Player lists are also cached any might not immediately return new results when changed through other methods e.g. in-game.
+
+##### Get a player list object
+You can list all available player lists...
+```js
+try {
+    let lists = await server.getPlayerLists();
+    console.log(lists);
+} catch (e) {
+    console.error(e.message);
+}
+```
+
+... or if you already now the name (e.g. "whitelist") you can directly create a player list object:
+```js
+try {
+    let list = server.getPlayerList("whitelist");
+    console.log(list);
+} catch (e) {
+    console.error(e.message);
+}
+```
+
+##### Get all player list entries
+```js
+try {
+    let list = server.getPlayerList("whitelist");
+    let entries = await list.getEntries();
+    console.log(entries);
+} catch (e) {
+    console.error(e.message);
+}
+```
+
+##### Add player list entries
+We handle all the heavy work of adding player list entries for you, e.g. automatically adding UUIDs depending on the online mode or executing the necessary commands while the server is running.
+```js
+try {
+    let list = server.getPlayerList("whitelist");
+    await list.addEntry("Steve"); // add just one entry
+    await list.addEntries(["Steve", "Alex"]); // add multiple entries at once
+    console.log(await list.getEntries());
+} catch (e) {
+    console.error(e.message);
+}
+```
+
+##### Delete player list entries
+```js
+try {
+    let list = server.getPlayerList("whitelist");
+    await list.deleteEntry("Steve"); // delete just one entry
+    await list.deleteEntries(["Steve", "Alex"]); // delete multiple entries at once
+    console.log(await list.getEntries());
+} catch (e) {
+    console.error(e.message);
+}
+```
