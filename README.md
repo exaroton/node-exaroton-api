@@ -150,7 +150,7 @@ try {
 }
 ```
 
-... or if you already now the name (e.g. "whitelist") you can directly create a player list object:
+... or if you already know the name (e.g. "whitelist") you can directly create a player list object:
 ```js
 try {
     let list = server.getPlayerList("whitelist");
