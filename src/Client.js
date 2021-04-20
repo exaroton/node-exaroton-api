@@ -10,11 +10,26 @@ const packageConfig = require('../package.json');
 
 class Client {
     /**
+     * @type {string}
+     */
+    protocol = "https";
+
+    /**
+     * @type {string}
+     */
+    host = "api.exaroton.com";
+
+    /**
+     * @type {string}
+     */
+    basePath = "/v1/";
+
+    /**
      * API base URL used for all requests
      *
      * @type {string}
      */
-    baseURL = "https://api.exaroton.com/v1/";
+    baseURL = this.protocol + "://" + this.host + this.basePath;
 
     /**
      * API token used for authentication
@@ -54,6 +69,13 @@ class Client {
 
         this.#apiToken = apiToken;
         return this;
+    }
+
+    /**
+     * @return {string}
+     */
+    getAPIToken() {
+        return this.#apiToken;
     }
 
     /**

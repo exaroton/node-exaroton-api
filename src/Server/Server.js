@@ -1,3 +1,6 @@
+const EventEmitter = require('events');
+
+const WebsocketClient = require("../Websocket/WebsocketClient");
 const Software = require('./Software');
 const Players = require('./Players');
 const ServerStatus = require('./ServerStatus');
@@ -13,7 +16,7 @@ const GetServerOptionRequest = require('../Request/Server/GetServerOptionRequest
 const SetServerOptionRequest = require('../Request/Server/SetServerOptionRequest');
 const GetPlayerListsRequest = require('../Request/Server/PlayerLists/GetPlayerListsRequest');
 
-class Server {
+class Server extends EventEmitter {
     /**
      * Shorthand to get server status constants
      *
@@ -28,6 +31,11 @@ class Server {
      * @private
      */
     #client;
+
+    /**
+     * @type {WebsocketClient}
+     */
+    #websocketClient;
 
     /**
      * Unique server ID
@@ -113,8 +121,16 @@ class Server {
      * @param {string} id
      */
     constructor(client, id) {
+        super();
         this.#client = client;
         this.id = id;
+    }
+
+    /**
+     * @return {Client}
+     */
+    getClient() {
+        return this.#client;
     }
 
     /**
@@ -282,6 +298,26 @@ class Server {
             }
         }
         return false;
+    }
+
+    /**
+     * Get a websocket client for this server
+     *
+     * @return {WebsocketClient}
+     */
+    getWebsocketClient() {
+        if (!this.#websocketClient) {
+            this.#websocketClient = new WebsocketClient(this);
+        }
+        return this.#websocketClient;
+    }
+
+    subscribe(stream) {
+        let websocketClient = this.getWebsocketClient();
+        if (!websocketClient.isConnected()) {
+            websocketClient.connect();
+        }
+        websocketClient.on("status", (server) => this.emit("status", server));
     }
 
     /**
