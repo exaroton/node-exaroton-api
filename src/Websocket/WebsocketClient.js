@@ -60,6 +60,11 @@ class WebsocketClient extends EventEmitter {
     /**
      * @type {boolean}
      */
+    #shouldConnect = false;
+
+    /**
+     * @type {boolean}
+     */
     #serverConnected = false;
 
     /**
@@ -88,22 +93,37 @@ class WebsocketClient extends EventEmitter {
         this.#client = server.getClient();
         this.protocol = this.#client.protocol === "https" ? "wss" : "ws";
         this.url = this.protocol + "://" + this.#client.host + this.#client.basePath + "servers/" + this.#server.id + "/websocket";
-        this.streamRetryInterval = setInterval(this.tryToStartStreams.bind(this), 15000);
     }
 
     /**
      * Connect to websocket
      */
     connect() {
-        this.#connected = true;
+        this.#shouldConnect = true;
         this.#websocket = new WebSocket(this.url, {headers: {authorization: "Bearer " + this.#client.getAPIToken()}});
         this.#websocket.on('open', this.onOpen.bind(this));
         this.#websocket.on('close', this.onClose.bind(this));
         this.#websocket.on('error', this.onError.bind(this));
         this.#websocket.on('message', this.onMessage.bind(this));
+        if (!this.streamRetryInterval) {
+            this.streamRetryInterval = setInterval(this.tryToStartStreams.bind(this), 15000);
+        }
+    }
+
+    /**
+     * Disconnect from the websocket and all streams
+     */
+    disconnect() {
+        this.#shouldConnect = false;
+        this.#websocket.close();
+        this.#streams = {};
+        clearInterval(this.#reconnectInterval);
+        clearInterval(this.streamRetryInterval);
+        this.streamRetryInterval = null;
     }
 
     onOpen() {
+        this.#connected = true;
         clearInterval(this.#reconnectInterval);
         this.emit('open');
     }
@@ -111,7 +131,7 @@ class WebsocketClient extends EventEmitter {
     onClose() {
         this.emit('close');
         this.#ready = false;
-        if (this.autoReconnect) {
+        if (this.autoReconnect && this.#shouldConnect) {
             this.#reconnectInterval = setInterval(this.connect.bind(this), this.reconnectTimeout);
         } else {
             this.#connected = false;

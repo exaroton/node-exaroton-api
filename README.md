@@ -272,3 +272,12 @@ server.on("heap:heap", function(data) {
     console.log(data.usage);
 });
 ```
+
+#### Unsubscribe
+You can unsubscribe from one, multiple or all streams using the `server.unsubscribe()` function.
+
+```js
+server.unsubscribe("console");
+server.unsubscribe(["tick", "heap"]);
+server.unsubscribe(); // this disconnects the websocket connection
+```

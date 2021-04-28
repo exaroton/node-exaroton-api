@@ -185,7 +185,7 @@ class Server extends EventEmitter {
         if (this.#websocketClient && this.#websocketClient.hasStream("console")) {
             /** @type {ConsoleStream} stream **/
             let stream = this.#websocketClient.getStream("console");
-            if(stream.isStarted()) {
+            if (stream.isStarted()) {
                 stream.sendCommand(command);
                 return true;
             }
@@ -323,6 +323,8 @@ class Server extends EventEmitter {
     }
 
     /**
+     * Subscribe to one or multiple streams
+     *
      * @return {boolean}
      * @param {string[]|string} streams
      */
@@ -345,6 +347,31 @@ class Server extends EventEmitter {
                 return false;
             }
             websocketStream.start();
+        }
+        return true;
+    }
+
+    /**
+     * Unsubscribe from one, multiple or all streams
+     *
+     * @param {string[]|string} streams
+     */
+    unsubscribe(streams) {
+        let websocketClient = this.getWebsocketClient();
+        if (!streams) {
+            websocketClient.disconnect();
+            return;
+        }
+
+        if (typeof streams === "string") {
+            streams = [streams];
+        }
+
+        for (let stream of streams) {
+            let websocketStream = websocketClient.getStream(stream)
+            if (websocketStream) {
+                websocketStream.stop();
+            }
         }
         return true;
     }

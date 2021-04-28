@@ -1,6 +1,6 @@
 {
   "name": "exaroton",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "exaroton API client",
   "homepage": "https://exaroton.com",
   "main": "index.js",
