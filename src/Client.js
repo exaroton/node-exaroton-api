@@ -29,7 +29,7 @@ class Client {
      *
      * @type {string}
      */
-    baseURL = this.protocol + "://" + this.host + this.basePath;
+    get baseURL() { return this.protocol + "://" + this.host + this.basePath }
 
     /**
      * API token used for authentication

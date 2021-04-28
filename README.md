@@ -1,6 +1,6 @@
 # Node.js exaroton API client
 
-### About
+## About
 The exaroton API allows automated access to some basic functionalities of your game servers, such as starting or stopping 
 the server. You can read the API documentation here: https://support.exaroton.com/hc/en-us/articles/360011926177
 
@@ -12,16 +12,19 @@ This is the official Node.js implementation of this API.
 npm install exaroton
 ```
 
-### Usage
+## Usage
 To use the API and this client you have to get your API key, which you can generate in your exaroton account settings: https://exaroton.com/account
 
-#### Create a client object
+
+### Create a client object
 ```js
 const {Client} = require('exaroton');
 
 const client = new Client(token);
 ```
 *Remember to keep your token secret and don't add it to any private or public code repositories.*
+
+### REST API
 
 #### Get account info
 ````js
@@ -194,4 +197,78 @@ try {
 } catch (e) {
     console.error(e.message);
 }
+```
+
+### Websocket API
+The websocket API allows a constant connection to our websocket service to receive 
+events in real time without polling (e.g. trying to get the server status every few seconds).
+
+#### Server status events
+You can simply connect to the websocket API for a server by running the `subscribe()` function.
+```js
+server.subscribe();
+```
+
+By default, you are always subscribed to server status update events, you can
+react to server status changes by adding a listener:
+```js
+server.subscribe();
+server.on("status", function(server) {
+    console.log(server.status);
+});
+```
+This event is not only triggered when the status itself changes but also when other
+events happen, e.g. a player joins the server.
+
+#### Console
+There are several optional streams that you can subscribe to, e.g. 
+the console.
+```js
+server.subscribe("console");
+```
+The console stream emits an event for every new console line.
+```js
+server.subscribe("console");
+server.on("console:line", function(data) {
+    console.log(data.line);
+});
+```
+The `data.line` property is already cleaned up for easier use in this client library, you can use `data.rawLine` if you want the raw
+data with all formatting codes etc.
+
+The console stream also allows you to send commands directly over the websocket. This is faster because the connection is already
+established and no further authorization etc. is necessary. This library already checks if you are subscribed to the console stream
+and sends the command through that stream instead, so you can just use it the same way as before:
+```js
+try {
+    await server.executeCommand("say Hello world!");
+} catch (e) {
+    console.error(e.message);
+}
+```
+
+#### Tick times
+On Minecraft Java edition servers with version 1.16 and higher it is possible to get the tick times, and the TPS (ticks per second) of your server.
+This information is also available as an optional stream.
+```js
+server.subscribe("tick");
+server.on("tick:tick", function(data) {
+    console.log("Tick time: " + data.averageTickTime + "ms");
+    console.log("TPS: " + data.tps);
+});
+```
+
+#### RAM usage
+There are two different optional streams to get RAM usage, the general `stats` stream and the Java specific `heap` stream.
+It is recommended to use the `heap` stream if you are running a server software that is based on Java. It is not recommended using both.
+
+You can subscribe to multiple streams at once by passing an array to the subscribe function.
+```js
+server.subscribe(["stats", "heap"]);
+server.on("stats:stats", function(data) {
+    console.log(data.memory.usage);
+});
+server.on("heap:heap", function(data) {
+    console.log(data.usage);
+});
 ```

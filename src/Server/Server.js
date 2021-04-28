@@ -179,9 +179,17 @@ class Server extends EventEmitter {
      * Execute a command in the server console
      *
      * @param {string} command
-     * @return {Promise<Response>}
+     * @return {Promise<Response|boolean>}
      */
     async executeCommand(command) {
+        if (this.#websocketClient && this.#websocketClient.hasStream("console")) {
+            /** @type {ConsoleStream} stream **/
+            let stream = this.#websocketClient.getStream("console");
+            if(stream.isStarted()) {
+                stream.sendCommand(command);
+                return true;
+            }
+        }
         return this.#client.request(new ExecuteServerCommandRequest(this.id, command));
     }
 
@@ -308,16 +316,37 @@ class Server extends EventEmitter {
     getWebsocketClient() {
         if (!this.#websocketClient) {
             this.#websocketClient = new WebsocketClient(this);
+            this.#websocketClient.on("status", (server) => this.emit("status", server));
+            this.#websocketClient.on("event", (data) => this.emit(data.stream + ":" + data.type, data.data));
         }
         return this.#websocketClient;
     }
 
-    subscribe(stream) {
+    /**
+     * @return {boolean}
+     * @param {string[]|string} streams
+     */
+    subscribe(streams) {
         let websocketClient = this.getWebsocketClient();
         if (!websocketClient.isConnected()) {
             websocketClient.connect();
         }
-        websocketClient.on("status", (server) => this.emit("status", server));
+        if (!streams) {
+            return;
+        }
+
+        if (typeof streams === "string") {
+            streams = [streams];
+        }
+
+        for (let stream of streams) {
+            let websocketStream = websocketClient.getStream(stream)
+            if (!websocketStream) {
+                return false;
+            }
+            websocketStream.start();
+        }
+        return true;
     }
 
     /**
