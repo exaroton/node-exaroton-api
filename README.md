@@ -2,7 +2,7 @@
 
 ## About
 The exaroton API allows automated access to some basic functionalities of your game servers, such as starting or stopping 
-the server. You can read the API documentation here: https://support.exaroton.com/hc/en-us/articles/360011926177
+the server. You can read the API documentation here: https://developers.exaroton.com
 
 This is the official Node.js implementation of this API.
 
@@ -32,7 +32,7 @@ let account = await client.getAccount();
 console.log("My account is " + account.name + " and I have " + account.credits + " credits.");
 ````
 
-The account object contains the fields and information as listed in the [documentation](https://support.exaroton.com/hc/en-us/articles/360011926177#account).
+The account object contains the fields and information as listed in the [documentation](https://developers.exaroton.com/#account-get).
 
 #### List servers
 ```js
@@ -43,7 +43,7 @@ for(let server of servers) {
 }
 ```
 
-Each server object contains the fields and information as listed in the [documentation](https://support.exaroton.com/hc/en-us/articles/360011926177#servers).
+Each server object contains the fields and information as listed in the [documentation](https://developers.exaroton.com/#servers-get).
 
 #### Create a server object by ID
 ```js
@@ -68,7 +68,7 @@ if (server.hasStatus(server.STATUS.ONLINE)) {
     console.log("Server is offline.");
 }
 ```
-The server status is an `integer` as described in the [documentation](https://support.exaroton.com/hc/en-us/articles/360011926177#servers). You can use
+The server status is an `integer` as described in the [documentation](https://developers.exaroton.com/#header-server-status). You can use
 the [ServerStatus](./src/Server/ServerStatus.js) object, which you can require on its own `const {ServerStatus} = require('exaroton')` or via the
 shorthand `server.STATUS` property.
 
