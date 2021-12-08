@@ -236,6 +236,24 @@ class Server extends EventEmitter {
         return this.setOption("ram", ram);
     }
 
+    /**
+     * Get the server MOTD
+     *
+     * @returns {Promise<string>}
+     */
+    getMOTD() {
+        return this.getOption("motd");
+    }
+
+    /**
+     * Set the server MOTD
+     *
+     * @param {string} motd
+     * @returns {Promise<Response>}
+     */
+    setMOTD(motd) {
+        return this.setOption("motd", motd);
+    }
 
     /**
      * Get a server option

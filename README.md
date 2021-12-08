@@ -136,6 +136,25 @@ try {
 ```
 The RAM is set in full GiB and has to be between 2 and 16.
 
+#### Get the server MOTD
+```js
+try {
+    let motd = await server.getMOTD();
+    console.log(motd);
+} catch (e) {
+    console.error(e.message);
+}
+```
+
+#### Set the server MOTD
+```js
+try {
+    await server.setMOTD("Hello world!");
+} catch (e) {
+    console.error(e.message);
+}
+```
+
 #### Player lists
 A player list is a list of players such as the whitelist, ops or bans.
 Player list entries are usually usernames, but might be something else, e.g. IPs in the banned-ips list.
