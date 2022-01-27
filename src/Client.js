@@ -136,7 +136,7 @@ class Client {
     /**
      * Get a list of all servers
      *
-     * @return {Server[]}
+     * @return {Promise<Server[]>}
      * @throws {RequestError}
      */
     async getServers() {
