@@ -344,7 +344,7 @@ class Server extends EventEmitter {
      * Subscribe to one or multiple streams
      *
      * @return {boolean}
-     * @param {string[]|string} streams
+     * @param {string[]|string} [streams]
      */
     subscribe(streams) {
         let websocketClient = this.getWebsocketClient();
@@ -372,7 +372,7 @@ class Server extends EventEmitter {
     /**
      * Unsubscribe from one, multiple or all streams
      *
-     * @param {string[]|string} streams
+     * @param {string[]|string} [streams]
      */
     unsubscribe(streams) {
         let websocketClient = this.getWebsocketClient();
@@ -420,6 +420,28 @@ class Server extends EventEmitter {
             this.players = new Players(server.players);
         }
         return this;
+    }
+
+    /**
+     * Only return intended public fields for JSON serialization
+     *
+     * Otherwise, fields inherited from EventEmitter would be serialized as well
+     *
+     * @returns {{}}
+     */
+    toJSON() {
+        return {
+            id: this.id,
+            name: this.name,
+            address: this.address,
+            motd: this.motd,
+            status: this.status,
+            host: this.host,
+            port: this.port,
+            shared: this.shared,
+            software: this.software,
+            players: this.players
+        }
     }
 }
 
