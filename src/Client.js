@@ -1,5 +1,4 @@
 const got = require('got');
-const {createWriteStream} = require("fs");
 const fs = require("fs").promises;
 
 const Server = require('./Server/Server');
@@ -125,13 +124,20 @@ class Client {
 
         let response;
         try {
-            if (request.shouldStreamToFile()) {
-                await this.streamResponse(url, gotOptions, request.outputPath);
+            if (request.hasOutputStream()) {
+                await this.streamResponse(url, gotOptions, request.getOutputStream());
                 return request.createResponse();
             } else {
                 response = await got(url, gotOptions);
             }
         } catch (e) {
+            if (request.outputPath !== null) {
+                try {
+                    await fs.unlink(request.outputPath);
+                } catch (e) {
+                    // ignore
+                }
+            }
             throw new RequestStatusError(e);
         }
 
@@ -145,15 +151,14 @@ class Client {
     /**
      * @param {string} url
      * @param {{}} gotOptions
-     * @param {string} outputPath
+     * @param {stream.Writable} outputStream
      * @return {Promise<unknown>}
      */
-    streamResponse(url, gotOptions, outputPath) {
+    streamResponse(url, gotOptions, outputStream) {
         return new Promise((resolve, reject) => {
             let stream = got.stream(url, gotOptions);
-            stream.pipe(createWriteStream(outputPath));
+            stream.pipe(outputStream);
             stream.on("error", async (error) => {
-                await fs.unlink(outputPath);
                 reject(error);
             });
             stream.on("end", resolve);

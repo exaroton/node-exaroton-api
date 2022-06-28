@@ -174,7 +174,17 @@ class File {
      * @return {Promise<Response>}
      */
     async download(outputPath) {
-        return await this.#client.request(new GetFileDataRequest(this.#server.id, this.path, outputPath));
+        return await this.#client.request(new GetFileDataRequest(this.#server.id, this.path).setOutputPath(outputPath));
+    }
+
+    /**
+     * Download the data/content of a file into a writable stream
+     *
+     * @param {stream.Writable} outputStream
+     * @return {Promise<Response>}
+     */
+    async downloadToStream(outputStream) {
+        return await this.#client.request(new GetFileDataRequest(this.#server.id, this.path).setOutputStream(outputStream));
     }
 
     /**
@@ -182,7 +192,7 @@ class File {
      *
      * If you want to upload a local file use File.upload() instead
      *
-     * @param content
+     * @param {string} content
      * @return {Promise<Response>}
      */
     async putContent(content) {
@@ -194,11 +204,21 @@ class File {
      *
      * If you want to upload the content of the file directly as a string use File.putContent() instead
      *
-     * @param inputPath
+     * @param {string} inputPath
      * @return {Promise<Response>}
      */
     async upload(inputPath) {
         return await this.#client.request(new PutFileDataRequest(this.#server.id, this.path).setInputPath(inputPath));
+    }
+
+    /**
+     * Upload from a readable stream
+     *
+     * @param {stream.Readable} inputStream
+     * @return {Promise<Response>}
+     */
+    async uploadFromStream(inputStream) {
+        return this.#client.request(new PutFileDataRequest(this.#server.id, this.path).setInputStream(inputStream));
     }
 
     /**

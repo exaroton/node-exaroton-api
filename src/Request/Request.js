@@ -1,5 +1,6 @@
 const FormData = require('form-data');
 const {createReadStream} = require('fs');
+const {createWriteStream} = require("fs");
 
 const Response = require('../Response/Response');
 
@@ -61,11 +62,25 @@ class Request {
     outputPath = null;
 
     /**
+     * Optional stream to stream the response body to
+     *
+     * @type {stream.Writable|null}
+     */
+    outputStream = null;
+
+    /**
      * Optional path to read the request body from
      *
      * @type {string|null}
      */
     inputPath = null;
+
+    /**
+     * Optional stream to read the request body from
+     *
+     * @type {stream.Readable|null}
+     */
+    inputStream = null;
 
     /**
      * Client that has executed this request
@@ -117,7 +132,7 @@ class Request {
      * @return {boolean}
      */
     hasBody() {
-        return ["POST", "PUT", "DELETE"].includes(this.method) && (this.data !== null || this.inputPath !== null);
+        return ["POST", "PUT", "DELETE"].includes(this.method) && (this.data !== null || this.inputPath !== null || this.inputStream !== null);
     }
 
     /**
@@ -126,8 +141,8 @@ class Request {
      * @return {FormData|string|ReadStream}
      */
     getBody() {
-        if (this.shouldStreamFromFile()) {
-            return createReadStream(this.inputPath);
+        if (this.hasInputStream()) {
+            return this.getInputStream();
         }
 
         if (typeof this.data === "string") {
@@ -156,7 +171,7 @@ class Request {
      * @param {{}|string|null} body
      * @return {Response}
      */
-    createResponse(body= null) {
+    createResponse(body = null) {
         let response = new (this.responseClass)(this);
         response.setBody(body);
         return response;
@@ -170,17 +185,43 @@ class Request {
     }
 
     /**
-     * @return {boolean}
+     * @return {null|stream.Writable}
      */
-    shouldStreamToFile() {
-        return this.outputPath !== null;
+    getOutputStream() {
+        if (this.outputStream !== null) {
+            return this.outputStream;
+        }
+        if (this.outputPath !== null) {
+            return createWriteStream(this.outputPath);
+        }
+        return null;
     }
 
     /**
      * @return {boolean}
      */
-    shouldStreamFromFile() {
-        return this.inputPath !== null;
+    hasOutputStream() {
+        return this.outputStream !== null || this.outputPath !== null;
+    }
+
+    /**
+     * @return {null|stream.Readable}
+     */
+    getInputStream() {
+        if (this.inputStream !== null) {
+            return this.inputStream;
+        }
+        if (this.inputPath !== null) {
+            return createReadStream(this.inputPath);
+        }
+        return null;
+    }
+
+    /**
+     * @return {boolean}
+     */
+    hasInputStream() {
+        return this.inputStream !== null || this.inputPath !== null;
     }
 
     /**
@@ -202,6 +243,39 @@ class Request {
      */
     setInputPath(inputPath) {
         this.inputPath = inputPath;
+        return this;
+    }
+
+    /**
+     * Set a file as output file for the response body
+     *
+     * @param {string} outputPath
+     * @return {this}
+     */
+    setOutputPath(outputPath) {
+        this.outputPath = outputPath;
+        return this;
+    }
+
+    /**
+     * Set a stream as input stream for the request body
+     *
+     * @param {stream.Readable} inputStream
+     * @return {this}
+     */
+    setInputStream(inputStream) {
+        this.inputStream = inputStream;
+        return this;
+    }
+
+    /**
+     * Set a stream as output stream for the response body
+     *
+     * @param {stream.Writable} outputStream
+     * @return {this}
+     */
+    setOutputStream(outputStream) {
+        this.outputStream = outputStream;
         return this;
     }
 }
