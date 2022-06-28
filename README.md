@@ -218,6 +218,79 @@ try {
 }
 ```
 
+#### Files
+
+You can request information about files, download and upload files.
+
+##### Get a file object
+This just creates the file object but doesn't request any information or content
+```js
+let file = server.getFile("server.properties");
+```
+
+##### Get file information
+If a file doesn't exist you will get a 404 error.
+```js
+try {
+    await file.getInfo();
+    console.log(file);
+} catch (e) {
+    console.error(e.message);
+}
+```
+
+##### Get the content of a file / download a file
+```js
+try {
+    // get the content of the file in a variable
+    // large files will cause high memory usage
+    let content = await file.getContent();
+    console.log(content);
+    
+    // or download the file to a local file
+    await file.download("test.txt");
+    
+    // or download the file to a stream
+    let stream = await file.downloadToStream(createWriteStream("test.txt"));
+} catch (e) {
+    console.error(e.message);
+}
+```
+
+##### Change the content of a file / upload a file
+```js
+try {
+    // change the content of the file
+    await file.setContent("Hello world!");
+    
+    // or upload a local file
+    await file.upload("test.txt");
+    
+    // or upload from a stream
+    await file.uploadFromStream(createReadStream("test.txt"));
+} catch (e) {
+    console.error(e.message);
+}
+```
+
+##### Delete a file
+```js
+try {
+    await file.delete();
+} catch (e) {
+    console.error(e.message);
+}
+```
+
+##### Create a directory
+```js
+try {
+    await file.createAsDirectory();
+} catch (e) {
+    console.error(e.message);
+}
+```
+
 ### Websocket API
 The websocket API allows a constant connection to our websocket service to receive 
 events in real time without polling (e.g. trying to get the server status every few seconds).
