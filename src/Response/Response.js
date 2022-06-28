@@ -7,7 +7,7 @@ class Response {
     /**
      * (raw/parsed) response body
      *
-     * @type {{}}
+     * @type {{}|string}
      */
     body;
 
@@ -27,13 +27,21 @@ class Response {
      * @return {*|null}
      */
     getData() {
+        if (typeof this.body === "undefined" || this.body === null) {
+            return null;
+        }
+
+        if (typeof this.body === "string") {
+            return this.body;
+        }
+
         return typeof this.body.data !== "undefined" ? this.body.data : null;
     }
 
     /**
      * Set the body to this.body and maybe parse content
      *
-     * @param {{}} body
+     * @param {{}|string} body
      */
     setBody(body) {
         this.body = body;

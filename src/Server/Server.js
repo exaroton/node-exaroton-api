@@ -5,6 +5,7 @@ const Software = require('./Software');
 const Players = require('./Players');
 const ServerStatus = require('./ServerStatus');
 const PlayerList = require('./PlayerList');
+const File = require('./File');
 const GetServerRequest = require('../Request/Server/GetServerRequest');
 const StartServerRequest = require('../Request/Server/StartServerRequest');
 const StopServerRequest = require('../Request/Server/StopServerRequest');
@@ -304,6 +305,19 @@ class Server extends EventEmitter {
         }
         this.#playerLists[name] = new PlayerList(name).setServer(this).setClient(this.#client);
         return this.#playerLists[name];
+    }
+
+    /**
+     * Get a file object for a server file
+     *
+     * This doesn't request file info or content yet.
+     * Use the File.getInfo() and File.getContent() functions for that
+     *
+     * @param {string} path The path of the file relative to the server root
+     * @return {File}
+     */
+    getFile(path) {
+        return new File(path).setServer(this).setClient(this.#client);
     }
 
     /**

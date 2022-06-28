@@ -1,4 +1,5 @@
 const FormData = require('form-data');
+const {createReadStream} = require('fs');
 
 const Response = require('../Response/Response');
 
@@ -32,7 +33,7 @@ class Request {
     /**
      * Post body data
      *
-     * @type {null|{}}
+     * @type {null|{}|string}
      */
     data = null;
 
@@ -42,6 +43,29 @@ class Request {
      * @type {Response}
      */
     responseClass = Response;
+
+    /**
+     * Response type (text|json|buffer)
+     *
+     * https://github.com/sindresorhus/got/blob/main/documentation/2-options.md#responsetype
+     *
+     * @type {string}
+     */
+    responseType = "json";
+
+    /**
+     * Optional path to write the response body to
+     *
+     * @type {string|null}
+     */
+    outputPath = null;
+
+    /**
+     * Optional path to read the request body from
+     *
+     * @type {string|null}
+     */
+    inputPath = null;
 
     /**
      * Client that has executed this request
@@ -93,15 +117,23 @@ class Request {
      * @return {boolean}
      */
     hasBody() {
-        return ["POST", "PUT", "DELETE"].includes(this.method) && this.data !== null;
+        return ["POST", "PUT", "DELETE"].includes(this.method) && (this.data !== null || this.inputPath !== null);
     }
 
     /**
      * Get body for request
      *
-     * @return {FormData|string}
+     * @return {FormData|string|ReadStream}
      */
     getBody() {
+        if (this.shouldStreamFromFile()) {
+            return createReadStream(this.inputPath);
+        }
+
+        if (typeof this.data === "string") {
+            return this.data;
+        }
+
         let body = new FormData();
         for (let key in this.data) {
             if (!this.data.hasOwnProperty(key)) {
@@ -121,13 +153,56 @@ class Request {
     /**
      * Create a response object for this request
      *
-     * @param {{}} body
+     * @param {{}|string|null} body
      * @return {Response}
      */
-    createResponse(body) {
+    createResponse(body= null) {
         let response = new (this.responseClass)(this);
         response.setBody(body);
         return response;
+    }
+
+    /**
+     * @return {boolean}
+     */
+    expectsJsonResponse() {
+        return this.responseType === "json";
+    }
+
+    /**
+     * @return {boolean}
+     */
+    shouldStreamToFile() {
+        return this.outputPath !== null;
+    }
+
+    /**
+     * @return {boolean}
+     */
+    shouldStreamFromFile() {
+        return this.inputPath !== null;
+    }
+
+    /**
+     * Set the data to put as string
+     *
+     * @param {string|{}} data
+     * @return {this}
+     */
+    setData(data) {
+        this.data = data;
+        return this;
+    }
+
+    /**
+     * Set a file as input file for the request body
+     *
+     * @param {string} inputPath
+     * @return {this}
+     */
+    setInputPath(inputPath) {
+        this.inputPath = inputPath;
+        return this;
     }
 }
 

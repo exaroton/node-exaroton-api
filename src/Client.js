@@ -1,4 +1,6 @@
 const got = require('got');
+const {createWriteStream} = require("fs");
+const fs = require("fs").promises;
 
 const Server = require('./Server/Server');
 const Account = require('./Account/Account');
@@ -29,7 +31,9 @@ class Client {
      *
      * @type {string}
      */
-    get baseURL() { return this.protocol + "://" + this.host + this.basePath }
+    get baseURL() {
+        return this.protocol + "://" + this.host + this.basePath
+    }
 
     /**
      * API token used for authentication
@@ -112,7 +116,7 @@ class Client {
             method: request.method,
             retry: 0,
             headers: headers,
-            responseType: "json"
+            responseType: request.responseType
         };
 
         if (request.hasBody()) {
@@ -121,16 +125,39 @@ class Client {
 
         let response;
         try {
-            response = await got(url, gotOptions);
+            if (request.shouldStreamToFile()) {
+                await this.streamResponse(url, gotOptions, request.outputPath);
+                return request.createResponse();
+            } else {
+                response = await got(url, gotOptions);
+            }
         } catch (e) {
             throw new RequestStatusError(e);
         }
 
-        if (response.body.success) {
+        if (!request.expectsJsonResponse() || response.body.success) {
             return request.createResponse(response.body);
         } else {
             throw new RequestBodyError(response);
         }
+    }
+
+    /**
+     * @param {string} url
+     * @param {{}} gotOptions
+     * @param {string} outputPath
+     * @return {Promise<unknown>}
+     */
+    streamResponse(url, gotOptions, outputPath) {
+        return new Promise((resolve, reject) => {
+            let stream = got.stream(url, gotOptions);
+            stream.pipe(createWriteStream(outputPath));
+            stream.on("error", async (error) => {
+                await fs.unlink(outputPath);
+                reject(error);
+            });
+            stream.on("end", resolve);
+        });
     }
 
     /**
