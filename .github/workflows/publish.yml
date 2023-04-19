@@ -7,12 +7,16 @@ on:
 jobs:
   publish-npm:
     runs-on: ubuntu-latest
+    permission:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
+      - run: npm install -g npm
       - run: npm ci
       - run: npm publish --provenance --access public
         env:
