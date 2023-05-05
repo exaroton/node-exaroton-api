@@ -1,4 +1,3 @@
-const FormData = require('form-data');
 const {createReadStream} = require('fs');
 const {createWriteStream} = require("fs");
 
@@ -149,20 +148,8 @@ class Request {
             return this.data;
         }
 
-        let body = new FormData();
-        for (let key in this.data) {
-            if (!this.data.hasOwnProperty(key)) {
-                continue;
-            }
-            if (Array.isArray(this.data[key])) {
-                for (let element of this.data[key]) {
-                    body.append(key + "[]", element);
-                }
-                continue;
-            }
-            body.append(key, this.data[key]);
-        }
-        return body;
+        this.setHeader("content-type", "application/json");
+        return JSON.stringify(this.data);
     }
 
     /**

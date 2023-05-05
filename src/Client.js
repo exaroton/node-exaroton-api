@@ -106,21 +106,21 @@ class Client {
     async request(request) {
         request.client = this;
         const url = this.baseURL + request.getEndpoint();
-        const headers = Object.assign({
-            "authorization": "Bearer " + this.#apiToken,
-            "user-agent": this.#userAgent
-        }, request.headers);
 
         let gotOptions = {
             method: request.method,
             retry: 0,
-            headers: headers,
             responseType: request.responseType
         };
 
         if (request.hasBody()) {
             gotOptions.body = request.getBody();
         }
+
+        gotOptions.headers = Object.assign({
+            "authorization": "Bearer " + this.#apiToken,
+            "user-agent": this.#userAgent
+        }, request.headers);
 
         let response;
         try {

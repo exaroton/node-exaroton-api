@@ -149,11 +149,12 @@ class Server extends EventEmitter {
     /**
      * Start the server
      *
+     * @param {boolean} useOwnCredits
      * @return {Promise<Response>}
      * @throws {RequestError}
      */
-    async start() {
-        return this.#client.request(new StartServerRequest(this.id));
+    async start(useOwnCredits = false) {
+        return this.#client.request(new StartServerRequest(this.id, useOwnCredits));
     }
 
     /**
