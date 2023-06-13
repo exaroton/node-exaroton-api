@@ -44,7 +44,6 @@ class Config {
 
             let {key, label, type, value, options} = option;
             if (typeof key !== "string" || typeof label !== "string" || typeof type !== "string" || options && !Array.isArray(options)) {
-
                 continue;
             }
 
