@@ -291,6 +291,40 @@ try {
 }
 ```
 
+#### Config files
+Config files are files that contain server configuration and are shown as forms rather than plain text files in the exaroton panel.
+You can get a config file object by using the `getConfig()` method on a file object.
+Whether a file is a config file can be checked using the `isConfigFile` property.
+
+```js
+let file = server.getFile("server.properties");
+let config = file.getConfig();
+```
+
+#### Get config file options
+```js
+let options = await config.getOptions();
+for(let [key, option] of options) {
+    console.log(key, option.getValue());
+}
+```
+
+#### Update config file options
+```js
+let options = await config.getOptions();
+
+options.get("max-players").setValue(26);
+options.get("pvp").setValue(false);
+
+await config.save();
+```
+
+Options of type `select` or `multiselect` have a list of possible values.
+```js
+let options = await config.getOptions();
+console.log(options.get("difficulty").getOptions());
+```
+
 ### Websocket API
 The websocket API allows a constant connection to our websocket service to receive 
 events in real time without polling (e.g. trying to get the server status every few seconds).
