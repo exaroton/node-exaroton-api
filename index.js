@@ -4,5 +4,6 @@ module.exports = {
     Software: require('./src/Server/Software'),
     ServerStatus: require('./src/Server/ServerStatus'),
     Request: require('./src/Request/Request'),
-    Response: require('./src/Response/Response')
+    Response: require('./src/Response/Response'),
+    ConfigOptionType: require('./src/Server/Config/ConfigOptionType')
 }

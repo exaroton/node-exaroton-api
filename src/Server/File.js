@@ -3,6 +3,7 @@ const GetFileDataRequest = require("../Request/Server/Files/GetFileDataRequest")
 const PutFileDataRequest = require("../Request/Server/Files/PutFileDataRequest");
 const DeleteFileDataRequest = require("../Request/Server/Files/DeleteFileDataRequest");
 const CreateDirectoryRequest = require("../Request/Server/Files/CreateDirectoryRequest");
+const Config = require("./Config/Config");
 
 class File {
     /**
@@ -60,14 +61,19 @@ class File {
     children = null;
 
     /**
-     * @type {{Server}}
+     * @type {Server}
      */
     #server;
 
     /**
-     * @type {{Client}}
+     * @type {Client}
      */
     #client;
+
+    /**
+     * @type {Config|null}
+     */
+    #config = null;
 
     /**
      * @param {string|null} path
@@ -113,7 +119,7 @@ class File {
     /**
      * Set the server
      *
-     * @param server
+     * @param {Server} server
      * @returns {this}
      */
     setServer(server) {
@@ -129,7 +135,7 @@ class File {
     /**
      * Set the API client
      *
-     * @param client
+     * @param {Client} client
      * @returns {this}
      */
     setClient(client) {
@@ -140,6 +146,20 @@ class File {
             }
         }
         return this;
+    }
+
+    /**
+     * @return {Client}
+     */
+    getClient() {
+        return this.#client;
+    }
+
+    /**
+     * @return {Server}
+     */
+    getServer() {
+        return this.#server;
     }
 
     /**
@@ -250,6 +270,19 @@ class File {
         }
 
         return this.children;
+    }
+
+    /**
+     * Get Config object for this file
+     * Only available if the file is a config file
+     *
+     * @return {Config}
+     */
+    getConfig() {
+        if (this.#config === null) {
+            this.#config = new Config(this);
+        }
+        return this.#config;
     }
 }
 
