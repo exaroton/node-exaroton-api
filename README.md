@@ -301,7 +301,7 @@ let file = server.getFile("server.properties");
 let config = file.getConfig();
 ```
 
-#### Get config file options
+##### Get config file options
 ```js
 let options = await config.getOptions();
 for(let [key, option] of options) {
@@ -309,7 +309,7 @@ for(let [key, option] of options) {
 }
 ```
 
-#### Update config file options
+##### Update config file options
 ```js
 let options = await config.getOptions();
 
