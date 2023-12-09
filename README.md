@@ -325,6 +325,38 @@ let options = await config.getOptions();
 console.log(options.get("difficulty").getOptions());
 ```
 
+#### Credit pools
+Credit pools allow sharing the costs of a server with other users. 
+
+##### List credit pools
+```js
+let pools = await client.getPools();
+console.log(pools);
+```
+
+##### Create a pool object by ID
+```js
+let server = client.pool(id);
+```
+
+##### Get pool information
+```js
+await pool.get();
+console.log(pool.name + ": " + pool.credits);
+```
+
+##### Get pool members
+```js
+let members = await pool.getMembers();
+console.log(members);
+```
+
+##### Get pool servers
+```js
+let servers = await pool.getServers();
+console.log(servers);
+```
+
 ### Websocket API
 The websocket API allows a constant connection to our websocket service to receive 
 events in real time without polling (e.g. trying to get the server status every few seconds).
