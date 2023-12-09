@@ -326,7 +326,7 @@ console.log(options.get("difficulty").getOptions());
 ```
 
 #### Credit pools
-Credit pools allow sharing the costs of a server with other users. 
+Credit pools allow sharing the costs of a server between multiple users. 
 
 ##### List credit pools
 ```js
