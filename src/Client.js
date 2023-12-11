@@ -6,8 +6,10 @@ const Account = require('./Account/Account');
 const RequestStatusError = require('./Error/RequestStatusError');
 const RequestBodyError = require('./Error/RequestBodyError');
 const GetServersRequest = require('./Request/GetServersRequest');
+const GetPoolsRequest = require('./Request/Billing/Pool/GetPoolsRequest');
 
 const packageConfig = require('../package.json');
+const Pool = require("./Billing/Pool/Pool.js");
 
 class Client {
     /**
@@ -176,6 +178,16 @@ class Client {
     }
 
     /**
+     * Get a list of all credit pools
+     *
+     * @return {Promise<Pool[]>}
+     * @throws {RequestError}
+     */
+    async getPools() {
+        return (await this.request(new GetPoolsRequest)).getData();
+    }
+
+    /**
      * Get account info for the current account
      *
      * @throws {RequestError}
@@ -193,6 +205,16 @@ class Client {
      */
     server(id) {
         return new Server(this, id);
+    }
+
+    /**
+     * Initialize a new pool object
+     *
+     * @param {string} id
+     * @return {Pool}
+     */
+    pool(id) {
+        return new Pool(this, id);
     }
 }
 

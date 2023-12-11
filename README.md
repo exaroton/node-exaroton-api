@@ -301,7 +301,7 @@ let file = server.getFile("server.properties");
 let config = file.getConfig();
 ```
 
-#### Get config file options
+##### Get config file options
 ```js
 let options = await config.getOptions();
 for(let [key, option] of options) {
@@ -309,7 +309,7 @@ for(let [key, option] of options) {
 }
 ```
 
-#### Update config file options
+##### Update config file options
 ```js
 let options = await config.getOptions();
 
@@ -323,6 +323,38 @@ Options of type `select` or `multiselect` have a list of possible values.
 ```js
 let options = await config.getOptions();
 console.log(options.get("difficulty").getOptions());
+```
+
+#### Credit pools
+Credit pools allow sharing the costs of a server between multiple users. 
+
+##### List credit pools
+```js
+let pools = await client.getPools();
+console.log(pools);
+```
+
+##### Create a pool object by ID
+```js
+let server = client.pool(id);
+```
+
+##### Get pool information
+```js
+await pool.get();
+console.log(pool.name + ": " + pool.credits);
+```
+
+##### Get pool members
+```js
+let members = await pool.getMembers();
+console.log(members);
+```
+
+##### Get pool servers
+```js
+let servers = await pool.getServers();
+console.log(servers);
 ```
 
 ### Websocket API
