@@ -1,32 +1,12 @@
 const PlayerList = require('../Server/PlayerList');
-const Response = require('./Response');
+const ArrayResponse = require("./ArrayResponse.js");
 
-class PlayerListsResponse extends Response {
-    /**
-     * @type {PlayerList[]}
-     */
-    lists = [];
-
+class PlayerListsResponse extends ArrayResponse {
     /**
      * @inheritDoc
      */
-    setBody(body) {
-        super.setBody(body);
-
-        if (!Array.isArray(body.data)) {
-            return;
-        }
-
-        for (let playerListName of body.data) {
-            this.lists.push(new PlayerList(playerListName).setClient(this.request.client));
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    getData() {
-        return this.lists;
+    handleItem(item) {
+        return new PlayerList(item).setClient(this.request.client);
     }
 }
 module.exports = PlayerListsResponse;

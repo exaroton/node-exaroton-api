@@ -1,32 +1,12 @@
-const Response = require('./Response');
 const Server = require('../Server/Server');
+const ArrayResponse = require("./ArrayResponse.js");
 
-class ServersResponse extends Response {
-    /**
-     * @type {Server[]}
-     */
-    servers = [];
-
+class ServersResponse extends ArrayResponse {
     /**
      * @inheritDoc
      */
-    setBody(body) {
-        super.setBody(body);
-
-        if (!Array.isArray(body.data)) {
-            return;
-        }
-
-        for (let serverObject of body.data) {
-            this.servers.push(new Server(this.request.client, serverObject.id).setFromObject(serverObject));
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    getData() {
-        return this.servers;
+    handleItem(item) {
+        return new Server(this.request.client, item.id).setFromObject(item);
     }
 }
 
