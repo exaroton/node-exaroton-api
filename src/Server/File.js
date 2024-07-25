@@ -265,7 +265,7 @@ class File {
      * @return {Promise<[File]|null>}
      */
     async getChildren() {
-        if (this.children === null && this.isDirectory) {
+        if (this.children === null && (this.isDirectory || this.isDirectory === undefined)) {
             await this.getInfo();
         }
 
