@@ -79,7 +79,7 @@ class File {
      * @param {string|null} path
      */
     constructor(path = null) {
-        if (path) {
+        if (path !== null) {
             this.setPath(path);
         }
     }
@@ -265,7 +265,7 @@ class File {
      * @return {Promise<[File]|null>}
      */
     async getChildren() {
-        if (this.children === null && this.isDirectory) {
+        if (this.children === null && (this.isDirectory || this.isDirectory === undefined)) {
             await this.getInfo();
         }
 

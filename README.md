@@ -239,6 +239,23 @@ try {
 }
 ```
 
+##### List files in a directory
+```js
+try {
+    // get the children of the directory
+    let children = await file.getChildren();
+    console.log(children);
+    
+    // iterate over the children
+    // each child is a file object
+    for (let child of children) {
+        console.log(child);
+    }
+} catch (e) {
+    console.error(e.message);
+}
+```
+
 ##### Get the content of a file / download a file
 ```js
 try {
