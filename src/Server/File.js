@@ -79,7 +79,7 @@ class File {
      * @param {string|null} path
      */
     constructor(path = null) {
-        if (path) {
+        if (path !== null) {
             this.setPath(path);
         }
     }
