@@ -16,6 +16,7 @@ const ShareServerLogsRequest = require('../Request/Server/ShareServerLogsRequest
 const GetServerOptionRequest = require('../Request/Server/GetServerOptionRequest');
 const SetServerOptionRequest = require('../Request/Server/SetServerOptionRequest');
 const GetPlayerListsRequest = require('../Request/Server/PlayerLists/GetPlayerListsRequest');
+const ExtendServerStopTimeRequest = require("../Request/Server/ExtendServerStopTimeRequest.js");
 
 class Server extends EventEmitter {
     /**
@@ -193,6 +194,17 @@ class Server extends EventEmitter {
             }
         }
         return this.#client.request(new ExecuteServerCommandRequest(this.id, command));
+    }
+
+    /**
+     * Extend the time until the server automatically stops
+     *
+     * @param {number} time
+     * @return {Promise<Response>}
+     * @throws {RequestError}
+     */
+    async extendStopTime(time) {
+        return this.#client.request(new ExtendServerStopTimeRequest(this.id, time));
     }
 
     /**
