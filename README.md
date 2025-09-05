@@ -93,6 +93,15 @@ try {
 }
 ```
 
+#### Extend the server stop timer
+```js
+try {
+    await server.extendStopTime(60);
+} catch (e) {
+    console.error(e.message);
+}
+```
+
 #### Get the server logs
 ```js
 try {
