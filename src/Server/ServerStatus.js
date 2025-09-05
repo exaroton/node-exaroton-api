@@ -9,6 +9,7 @@ const ServerStatus = {
     LOADING: 6,
     CRASHED: 7,
     PENDING: 8,
+    TRANSFERRING: 9,
     PREPARING: 10
 };
 
