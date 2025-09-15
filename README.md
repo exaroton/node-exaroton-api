@@ -6,6 +6,9 @@ the server. You can read the API documentation here: https://developers.exaroton
 
 This is the official Node.js implementation of this API.
 
+### Requirements
+- Node 22 or later
+
 ### Installation
 
 ```
