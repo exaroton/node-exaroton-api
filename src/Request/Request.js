@@ -2,6 +2,7 @@ import {createReadStream} from 'fs'
 import {createWriteStream} from 'fs'
 
 import Response from '../Response/Response.js'
+import * as stream from "node:stream";
 
 export default class Request {
     /**
@@ -63,7 +64,7 @@ export default class Request {
     /**
      * Optional stream to stream the response body to
      *
-     * @type {stream.Writable|null}
+     * @type {import('stream').Writable|null}
      */
     outputStream = null;
 
@@ -77,7 +78,7 @@ export default class Request {
     /**
      * Optional stream to read the request body from
      *
-     * @type {stream.Readable|null}
+     * @type {import('stream').Readable|null}
      */
     inputStream = null;
 
@@ -137,11 +138,11 @@ export default class Request {
     /**
      * Get body for request
      *
-     * @return {FormData|string|ReadStream}
+     * @return {BodyInit}
      */
     getBody() {
         if (this.hasInputStream()) {
-            return this.getInputStream();
+            return stream.Readable.toWeb(this.getInputStream());
         }
 
         if (typeof this.data === "string") {
@@ -172,7 +173,7 @@ export default class Request {
     }
 
     /**
-     * @return {null|stream.Writable}
+     * @return {null|import('stream').Writable}
      */
     getOutputStream() {
         if (this.outputStream !== null) {
@@ -192,7 +193,7 @@ export default class Request {
     }
 
     /**
-     * @return {null|stream.Readable}
+     * @return {null|import('stream').Readable}
      */
     getInputStream() {
         if (this.inputStream !== null) {

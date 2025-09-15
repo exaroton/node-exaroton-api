@@ -1,10 +1,12 @@
 import RequestError from './RequestError.js'
 
 export default class RequestStatusError extends RequestError {
-    constructor(error) {
+    /**
+     * @param {Response} response fetch response object
+     * @param {any} data response data
+     */
+    constructor(response, data) {
         super();
-        if (!error.response || !this.setErrorFromResponseBody(error.response)) {
-            this.message = error.toString();
-        }
+        this.setErrorFromResponseBody(response, data);
     }
 }
