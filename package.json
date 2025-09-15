@@ -4,7 +4,10 @@
     "description": "exaroton API client",
     "homepage": "https://exaroton.com",
     "main": "index.js",
-    "repository": "github:exaroton/node-exaroton-api",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/exaroton/node-exaroton-api.git"
+    },
     "author": "Matthias Neid",
     "license": "MIT",
     "type": "module",
