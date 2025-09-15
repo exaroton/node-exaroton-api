@@ -1,9 +1,7 @@
-const ServerRequest = require('../ServerRequest');
-const PlayerListResponse = require('../../../Response/PlayerListsResponse');
+import ServerRequest from '../ServerRequest.js'
+import PlayerListResponse from '../../../Response/PlayerListsResponse.js'
 
-class GetPlayerListsRequest extends ServerRequest {
+export default class GetPlayerListsRequest extends ServerRequest {
     endpoint = "servers/{id}/playerlists";
     responseClass = PlayerListResponse;
 }
-
-module.exports = GetPlayerListsRequest;

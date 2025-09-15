@@ -1,6 +1,6 @@
-const EventEmitter = require('events');
+import EventEmitter from 'events'
 
-class Stream extends EventEmitter {
+export default class Stream extends EventEmitter {
     /**
      * @type {WebsocketClient}
      */
@@ -159,5 +159,3 @@ class Stream extends EventEmitter {
         return this.#started;
     }
 }
-
-module.exports = Stream;

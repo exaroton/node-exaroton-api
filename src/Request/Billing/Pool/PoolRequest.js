@@ -1,6 +1,6 @@
-const Request = require('../../Request.js');
+import Request from '../../Request.js'
 
-class PoolRequest extends Request {
+export default class PoolRequest extends Request {
     /**
      * Pool request constructor
      *
@@ -11,5 +11,3 @@ class PoolRequest extends Request {
         this.setParameter("id", id);
     }
 }
-
-module.exports = PoolRequest;

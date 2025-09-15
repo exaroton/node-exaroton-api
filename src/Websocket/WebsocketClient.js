@@ -1,15 +1,15 @@
-const EventEmitter = require('events');
-const WebSocket = require('ws');
+import EventEmitter from 'events'
+import WebSocket from 'ws'
 
-const ConsoleStream = require("./ConsoleStream");
-const HeapStream = require("./HeapStream");
-const StatsStream = require("./StatsStream");
-const TickStream = require("./TickStream");
+import ConsoleStream from './ConsoleStream.js'
+import HeapStream from './HeapStream.js'
+import StatsStream from './StatsStream.js'
+import TickStream from './TickStream.js'
 
 /**
  * Websocket client to connect to the websocket for this server
  */
-class WebsocketClient extends EventEmitter {
+export default class WebsocketClient extends EventEmitter {
     /**
      * @type {string}
      */
@@ -265,5 +265,3 @@ class WebsocketClient extends EventEmitter {
         this.#websocket.send(JSON.stringify(message));
     }
 }
-
-module.exports = WebsocketClient;

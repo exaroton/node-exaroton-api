@@ -1,4 +1,4 @@
-class RequestError extends Error {
+export default class RequestError extends Error {
     statusCode;
     error;
     response;
@@ -21,5 +21,3 @@ class RequestError extends Error {
         return false;
     }
 }
-
-module.exports = RequestError;

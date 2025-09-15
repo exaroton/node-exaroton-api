@@ -1,11 +1,11 @@
-const GetFileInformationRequest = require("../Request/Server/Files/GetFileInformationRequest");
-const GetFileDataRequest = require("../Request/Server/Files/GetFileDataRequest");
-const PutFileDataRequest = require("../Request/Server/Files/PutFileDataRequest");
-const DeleteFileDataRequest = require("../Request/Server/Files/DeleteFileDataRequest");
-const CreateDirectoryRequest = require("../Request/Server/Files/CreateDirectoryRequest");
-const Config = require("./Config/Config");
+import GetFileInformationRequest from '../Request/Server/Files/GetFileInformationRequest.js'
+import GetFileDataRequest from '../Request/Server/Files/GetFileDataRequest.js'
+import PutFileDataRequest from '../Request/Server/Files/PutFileDataRequest.js'
+import DeleteFileDataRequest from '../Request/Server/Files/DeleteFileDataRequest.js'
+import CreateDirectoryRequest from '../Request/Server/Files/CreateDirectoryRequest.js'
+import Config from './Config/Config.js'
 
-class File {
+export default class File {
     /**
      * File path relative to server root
      *
@@ -285,5 +285,3 @@ class File {
         return this.#config;
     }
 }
-
-module.exports = File;

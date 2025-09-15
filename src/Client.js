@@ -1,17 +1,17 @@
-const got = require('got');
-const fs = require("fs").promises;
+import got from 'got'
+import {unlink} from 'fs/promises'
 
-const Server = require('./Server/Server');
-const Account = require('./Account/Account');
-const RequestStatusError = require('./Error/RequestStatusError');
-const RequestBodyError = require('./Error/RequestBodyError');
-const GetServersRequest = require('./Request/GetServersRequest');
-const GetPoolsRequest = require('./Request/Billing/Pool/GetPoolsRequest');
+import Server from './Server/Server.js'
+import Account from './Account/Account.js'
+import RequestStatusError from './Error/RequestStatusError.js'
+import RequestBodyError from './Error/RequestBodyError.js'
+import GetServersRequest from './Request/GetServersRequest.js'
+import GetPoolsRequest from './Request/Billing/Pool/GetPoolsRequest.js'
 
-const packageConfig = require('../package.json');
-const Pool = require("./Billing/Pool/Pool.js");
+import packageConfig from '../package.json' with { type: 'json' }
+import Pool from './Billing/Pool/Pool.js'
 
-class Client {
+export default class Client {
     /**
      * @type {string}
      */
@@ -135,7 +135,7 @@ class Client {
         } catch (e) {
             if (request.outputPath !== null) {
                 try {
-                    await fs.unlink(request.outputPath);
+                    await unlink(request.outputPath);
                 } catch (e) {
                     // ignore
                 }
@@ -217,5 +217,3 @@ class Client {
         return new Pool(this, id);
     }
 }
-
-module.exports = Client;

@@ -1,5 +1,5 @@
 
-class Software {
+export default class Software {
     /**
      * Software ID
      *
@@ -32,5 +32,3 @@ class Software {
         this.version = typeof softwareObject.version !== "undefined" ? softwareObject.version : null;
     }
 }
-
-module.exports = Software;

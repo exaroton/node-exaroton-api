@@ -1,8 +1,6 @@
-const Stream = require("./Stream");
+import Stream from './Stream.js'
 
-class StatsStream extends Stream {
+export default class StatsStream extends Stream {
     name = "stats";
     startStatuses = [1];
 }
-
-module.exports = StatsStream;

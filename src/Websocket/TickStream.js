@@ -1,6 +1,6 @@
-const Stream = require("./Stream");
+import Stream from './Stream.js'
 
-class TickStream extends Stream {
+export default class TickStream extends Stream {
     name = "tick";
     startStatuses = [1];
 
@@ -12,5 +12,3 @@ class TickStream extends Stream {
         }
     }
 }
-
-module.exports = TickStream;

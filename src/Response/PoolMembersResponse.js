@@ -1,7 +1,7 @@
-const ArrayResponse = require("./ArrayResponse.js");
-const PoolMember = require("../Billing/Pool/PoolMember.js");
+import ArrayResponse from './ArrayResponse.js'
+import PoolMember from '../Billing/Pool/PoolMember.js'
 
-class PoolMembersResponse extends ArrayResponse {
+export default class PoolMembersResponse extends ArrayResponse {
     /**
      * @inheritDoc
      */
@@ -9,5 +9,3 @@ class PoolMembersResponse extends ArrayResponse {
         return new PoolMember(item);
     }
 }
-
-module.exports = PoolMembersResponse;

@@ -2,7 +2,7 @@
  * @typedef {string|number|boolean|string[]} ConfigOptionValue
  */
 
-class ConfigOption {
+export default class ConfigOption {
     /**
      * Key of this config option
      *
@@ -99,5 +99,3 @@ class ConfigOption {
         return this.#options;
     }
 }
-
-module.exports = ConfigOption;

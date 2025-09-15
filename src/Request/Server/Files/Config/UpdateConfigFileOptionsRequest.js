@@ -1,6 +1,6 @@
-const FileRequest = require("../FileRequest");
+import FileRequest from '../FileRequest.js'
 
-class UpdateConfigFileOptionsRequest extends FileRequest {
+export default class UpdateConfigFileOptionsRequest extends FileRequest {
     endpoint = "servers/{id}/files/config/{path}";
     method = "POST";
 
@@ -17,5 +17,3 @@ class UpdateConfigFileOptionsRequest extends FileRequest {
         this.data = options;
     }
 }
-
-module.exports = UpdateConfigFileOptionsRequest;

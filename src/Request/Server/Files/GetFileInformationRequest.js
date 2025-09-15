@@ -1,7 +1,5 @@
-const FileRequest = require('./FileRequest');
+import FileRequest from './FileRequest.js'
 
-class GetFileInformationRequest extends FileRequest {
+export default class GetFileInformationRequest extends FileRequest {
     endpoint = "servers/{id}/files/info/{path}";
 }
-
-module.exports = GetFileInformationRequest;

@@ -1,6 +1,6 @@
-const GetAccountRequest = require('../Request/Account/GetAccountRequest');
+import GetAccountRequest from '../Request/Account/GetAccountRequest.js'
 
-class Account {
+export default class Account {
     /**
      * @type {Client}
      * @private
@@ -70,5 +70,3 @@ class Account {
         return this;
     }
 }
-
-module.exports = Account;

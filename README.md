@@ -18,7 +18,7 @@ To use the API and this client you have to get your API key, which you can gener
 
 ### Create a client object
 ```js
-const {Client} = require('exaroton');
+import {Client} from 'exaroton'
 
 const client = new Client(token);
 ```
@@ -69,7 +69,7 @@ if (server.hasStatus(server.STATUS.ONLINE)) {
 }
 ```
 The server status is an `integer` as described in the [documentation](https://developers.exaroton.com/#header-server-status). You can use
-the [ServerStatus](./src/Server/ServerStatus.js) object, which you can require on its own `const {ServerStatus} = require('exaroton')` or via the
+the [ServerStatus](./src/Server/ServerStatus.js) object, which you can require on its own `import {ServerStatus} from 'exaroton'` or via the
 shorthand `server.STATUS` property.
 
 #### Start/stop/restart the server

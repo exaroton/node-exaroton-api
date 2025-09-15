@@ -1,6 +1,6 @@
-const ServerRequest = require('./ServerRequest');
+import ServerRequest from './ServerRequest.js'
 
-class ExecuteServerCommandRequest extends ServerRequest {
+export default class ExecuteServerCommandRequest extends ServerRequest {
     endpoint = "servers/{id}/command";
     method = "POST";
 
@@ -16,5 +16,3 @@ class ExecuteServerCommandRequest extends ServerRequest {
         this.data = {command: command};
     }
 }
-
-module.exports = ExecuteServerCommandRequest;

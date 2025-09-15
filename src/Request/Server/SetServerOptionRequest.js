@@ -1,6 +1,6 @@
-const GetServerOptionsRequest = require('./GetServerOptionRequest');
+import GetServerOptionsRequest from './GetServerOptionRequest.js'
 
-class SetServerOptionRequest extends GetServerOptionsRequest {
+export default class SetServerOptionRequest extends GetServerOptionsRequest {
     method = "POST";
 
     /**
@@ -16,5 +16,3 @@ class SetServerOptionRequest extends GetServerOptionsRequest {
         this.data[option] = value;
     }
 }
-
-module.exports = SetServerOptionRequest;

@@ -1,9 +1,7 @@
-const PutFileDataRequest = require("./PutFileDataRequest");
+import PutFileDataRequest from './PutFileDataRequest.js'
 
-class CreateDirectoryRequest extends PutFileDataRequest {
+export default class CreateDirectoryRequest extends PutFileDataRequest {
     headers = {
         "Content-Type": "inode/directory"
     }
 }
-
-module.exports = CreateDirectoryRequest;

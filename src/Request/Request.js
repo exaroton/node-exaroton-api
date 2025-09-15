@@ -1,9 +1,9 @@
-const {createReadStream} = require('fs');
-const {createWriteStream} = require("fs");
+import {createReadStream} from 'fs'
+import {createWriteStream} from 'fs'
 
-const Response = require('../Response/Response');
+import Response from '../Response/Response.js'
 
-class Request {
+export default class Request {
     /**
      * Request method, e.g. "GET" or "POST"
      *
@@ -266,5 +266,3 @@ class Request {
         return this;
     }
 }
-
-module.exports = Request;

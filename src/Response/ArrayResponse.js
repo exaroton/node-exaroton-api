@@ -1,9 +1,9 @@
-const Response = require('./Response');
+import Response from './Response.js'
 
 /**
  * @abstract
  */
-class ArrayResponse extends Response {
+export default class ArrayResponse extends Response {
     /**
      * @type {*[]}
      */
@@ -40,5 +40,3 @@ class ArrayResponse extends Response {
         return this.items;
     }
 }
-
-module.exports = ArrayResponse;
