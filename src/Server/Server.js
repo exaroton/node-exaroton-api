@@ -1,24 +1,24 @@
-const EventEmitter = require('events');
+import EventEmitter from 'events'
 
-const WebsocketClient = require("../Websocket/WebsocketClient");
-const Software = require('./Software');
-const Players = require('./Players');
-const ServerStatus = require('./ServerStatus');
-const PlayerList = require('./PlayerList');
-const File = require('./File');
-const GetServerRequest = require('../Request/Server/GetServerRequest');
-const StartServerRequest = require('../Request/Server/StartServerRequest');
-const StopServerRequest = require('../Request/Server/StopServerRequest');
-const RestartServerRequest = require('../Request/Server/RestartServerRequest');
-const ExecuteServerCommandRequest = require('../Request/Server/ExecuteServerCommandRequest');
-const GetServerLogsRequest = require('../Request/Server/GetServerLogsRequest');
-const ShareServerLogsRequest = require('../Request/Server/ShareServerLogsRequest');
-const GetServerOptionRequest = require('../Request/Server/GetServerOptionRequest');
-const SetServerOptionRequest = require('../Request/Server/SetServerOptionRequest');
-const GetPlayerListsRequest = require('../Request/Server/PlayerLists/GetPlayerListsRequest');
-const ExtendServerStopTimeRequest = require("../Request/Server/ExtendServerStopTimeRequest.js");
+import WebsocketClient from '../Websocket/WebsocketClient.js'
+import Software from './Software.js'
+import Players from './Players.js'
+import ServerStatus from './ServerStatus.js'
+import PlayerList from './PlayerList.js'
+import File from './File.js'
+import GetServerRequest from '../Request/Server/GetServerRequest.js'
+import StartServerRequest from '../Request/Server/StartServerRequest.js'
+import StopServerRequest from '../Request/Server/StopServerRequest.js'
+import RestartServerRequest from '../Request/Server/RestartServerRequest.js'
+import ExecuteServerCommandRequest from '../Request/Server/ExecuteServerCommandRequest.js'
+import GetServerLogsRequest from '../Request/Server/GetServerLogsRequest.js'
+import ShareServerLogsRequest from '../Request/Server/ShareServerLogsRequest.js'
+import GetServerOptionRequest from '../Request/Server/GetServerOptionRequest.js'
+import SetServerOptionRequest from '../Request/Server/SetServerOptionRequest.js'
+import GetPlayerListsRequest from '../Request/Server/PlayerLists/GetPlayerListsRequest.js'
+import ExtendServerStopTimeRequest from '../Request/Server/ExtendServerStopTimeRequest.js'
 
-class Server extends EventEmitter {
+export default class Server extends EventEmitter {
     /**
      * Shorthand to get server status constants
      *
@@ -471,5 +471,3 @@ class Server extends EventEmitter {
         }
     }
 }
-
-module.exports = Server;

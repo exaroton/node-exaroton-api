@@ -1,10 +1,12 @@
-const RequestError = require('./RequestError');
+import RequestError from './RequestError.js'
 
-class RequestBodyError extends RequestError {
-    constructor(response) {
+export default class RequestBodyError extends RequestError {
+    /**
+     * @param {Response} response fetch response object
+     * @param {any} data response data
+     */
+    constructor(response, data) {
         super();
-        this.setErrorFromResponseBody(response);
+        this.setErrorFromResponseBody(response, data);
     }
 }
-
-module.exports = RequestBodyError;

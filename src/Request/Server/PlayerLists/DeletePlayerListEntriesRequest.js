@@ -1,11 +1,9 @@
-const PlayerListRequest = require('./PlayerListRequest');
+import PlayerListRequest from './PlayerListRequest.js'
 
-class DeletePlayerListEntriesRequest extends PlayerListRequest {
+export default class DeletePlayerListEntriesRequest extends PlayerListRequest {
     method = "DELETE";
     constructor(id, name, entries) {
         super(id, name);
         this.data = {entries: entries};
     }
 }
-
-module.exports = DeletePlayerListEntriesRequest;

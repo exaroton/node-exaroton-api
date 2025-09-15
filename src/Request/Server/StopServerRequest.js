@@ -1,7 +1,5 @@
-const ServerRequest = require('./ServerRequest');
+import ServerRequest from './ServerRequest.js'
 
-class StopServerRequest extends ServerRequest {
+export default class StopServerRequest extends ServerRequest {
     endpoint = "servers/{id}/stop";
 }
-
-module.exports = StopServerRequest;

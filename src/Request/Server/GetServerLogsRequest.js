@@ -1,7 +1,5 @@
-const ServerRequest = require('./ServerRequest');
+import ServerRequest from './ServerRequest.js'
 
-class GetServerLogsRequest extends ServerRequest {
+export default class GetServerLogsRequest extends ServerRequest {
     endpoint = "servers/{id}/logs";
 }
-
-module.exports = GetServerLogsRequest;

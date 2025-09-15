@@ -1,4 +1,4 @@
-class Response {
+export default class Response {
     /**
      * @type {Request}
      */
@@ -47,5 +47,3 @@ class Response {
         this.body = body;
     }
 }
-
-module.exports = Response;

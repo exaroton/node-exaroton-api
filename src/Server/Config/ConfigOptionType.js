@@ -1,7 +1,7 @@
 /**
  * @enum {string}
  */
-class ConfigOptionType {
+export default class ConfigOptionType {
     static STRING = "string";
     static INTEGER = "number";
     static FLOAT = "float";
@@ -9,5 +9,3 @@ class ConfigOptionType {
     static MULTI_SELECT = "multiselect";
     static SELECT = "select";
 }
-
-module.exports = ConfigOptionType;

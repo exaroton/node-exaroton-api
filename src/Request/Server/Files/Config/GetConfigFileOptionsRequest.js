@@ -1,7 +1,5 @@
-const FileRequest = require("../FileRequest");
+import FileRequest from '../FileRequest.js'
 
-class GetConfigFileOptionsRequest extends FileRequest {
+export default class GetConfigFileOptionsRequest extends FileRequest {
     endpoint = "servers/{id}/files/config/{path}";
 }
-
-module.exports = GetConfigFileOptionsRequest;

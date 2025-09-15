@@ -1,11 +1,9 @@
-const ServerRequest = require('../ServerRequest');
+import ServerRequest from '../ServerRequest.js'
 
-class PlayerListRequest extends ServerRequest {
+export default class PlayerListRequest extends ServerRequest {
     endpoint = "servers/{id}/playerlists/{name}/";
     constructor(id, name) {
         super(id);
         this.setParameter("name", name);
     }
 }
-
-module.exports = PlayerListRequest;

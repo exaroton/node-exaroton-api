@@ -1,7 +1,5 @@
-const PoolRequest = require("./PoolRequest.js");
+import PoolRequest from './PoolRequest.js'
 
-class GetPoolRequest extends PoolRequest {
+export default class GetPoolRequest extends PoolRequest {
     endpoint = "billing/pools/{id}";
 }
-
-module.exports = GetPoolRequest;

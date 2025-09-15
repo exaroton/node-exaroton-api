@@ -1,7 +1,5 @@
-const Request = require('../Request');
+import Request from '../Request.js'
 
-class GetAccountRequest extends Request {
+export default class GetAccountRequest extends Request {
     endpoint = "account/";
 }
-
-module.exports = GetAccountRequest;

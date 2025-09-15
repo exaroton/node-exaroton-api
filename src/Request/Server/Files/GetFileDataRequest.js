@@ -1,7 +1,5 @@
-const FileDataRequest = require("./FileDataRequest");
+import FileDataRequest from './FileDataRequest.js'
 
-class GetFileDataRequest extends FileDataRequest {
+export default class GetFileDataRequest extends FileDataRequest {
     responseType = "text";
 }
-
-module.exports = GetFileDataRequest;

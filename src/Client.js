@@ -1,17 +1,18 @@
-const got = require('got');
-const fs = require("fs").promises;
+import {unlink} from 'fs/promises'
 
-const Server = require('./Server/Server');
-const Account = require('./Account/Account');
-const RequestStatusError = require('./Error/RequestStatusError');
-const RequestBodyError = require('./Error/RequestBodyError');
-const GetServersRequest = require('./Request/GetServersRequest');
-const GetPoolsRequest = require('./Request/Billing/Pool/GetPoolsRequest');
+import Server from './Server/Server.js'
+import Account from './Account/Account.js'
+import RequestStatusError from './Error/RequestStatusError.js'
+import RequestBodyError from './Error/RequestBodyError.js'
+import GetServersRequest from './Request/GetServersRequest.js'
+import GetPoolsRequest from './Request/Billing/Pool/GetPoolsRequest.js'
 
-const packageConfig = require('../package.json');
-const Pool = require("./Billing/Pool/Pool.js");
+import packageConfig from '../package.json' with { type: 'json' }
+import Pool from './Billing/Pool/Pool.js'
+import * as stream from "node:stream";
+import RequestError from "./Error/RequestError.js";
 
-class Client {
+export default class Client {
     /**
      * @type {string}
      */
@@ -109,62 +110,58 @@ class Client {
         request.client = this;
         const url = this.baseURL + request.getEndpoint();
 
-        let gotOptions = {
+        /** @type {RequestInit} */
+        const options = {
             method: request.method,
-            retry: 0,
-            responseType: request.responseType
-        };
-
-        if (request.hasBody()) {
-            gotOptions.body = request.getBody();
+            headers: Object.assign({
+                "authorization": "Bearer " + this.#apiToken,
+                "user-agent": this.#userAgent
+            }, request.headers)
         }
 
-        gotOptions.headers = Object.assign({
-            "authorization": "Bearer " + this.#apiToken,
-            "user-agent": this.#userAgent
-        }, request.headers);
+        if (request.hasBody()) {
+            options.body = request.getBody();
+        }
 
         let response;
         try {
+            response = await fetch(url, options);
+            if (!response.ok) {
+                let data = null;
+                try {
+                    data = await response.json();
+                } catch (e) { }
+                throw new RequestStatusError(response, data)
+            }
             if (request.hasOutputStream()) {
-                await this.streamResponse(url, gotOptions, request.getOutputStream());
+                await response.body.pipeTo(stream.Writable.toWeb(request.getOutputStream()))
                 return request.createResponse();
-            } else {
-                response = await got(url, gotOptions);
             }
         } catch (e) {
             if (request.outputPath !== null) {
                 try {
-                    await fs.unlink(request.outputPath);
+                    await unlink(request.outputPath);
                 } catch (e) {
                     // ignore
                 }
             }
-            throw new RequestStatusError(e);
+
+            if (e instanceof RequestError) {
+                throw e;
+            }
+            throw new RequestError(e);
         }
 
-        if (!request.expectsJsonResponse() || response.body.success) {
-            return request.createResponse(response.body);
-        } else {
-            throw new RequestBodyError(response);
-        }
-    }
+        if (request.expectsJsonResponse()) {
+            const data = await response.json();
+            if (data.success) {
+                return request.createResponse(data);
+            }
 
-    /**
-     * @param {string} url
-     * @param {{}} gotOptions
-     * @param {stream.Writable} outputStream
-     * @return {Promise<unknown>}
-     */
-    streamResponse(url, gotOptions, outputStream) {
-        return new Promise((resolve, reject) => {
-            let stream = got.stream(url, gotOptions);
-            stream.pipe(outputStream);
-            stream.on("error", async (error) => {
-                reject(error);
-            });
-            stream.on("end", resolve);
-        });
+            throw new RequestBodyError(response, data);
+        }
+
+        return request.createResponse(await response.text());
     }
 
     /**
@@ -217,5 +214,3 @@ class Client {
         return new Pool(this, id);
     }
 }
-
-module.exports = Client;

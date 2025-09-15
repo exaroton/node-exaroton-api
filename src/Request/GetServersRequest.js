@@ -1,10 +1,8 @@
-const Request = require('./Request');
-const ServersResponse = require('../Response/ServersResponse');
+import Request from './Request.js'
+import ServersResponse from '../Response/ServersResponse.js'
 
-class GetServersRequest extends Request {
+export default class GetServersRequest extends Request {
     endpoint = "servers";
     responseClass = ServersResponse;
 
 }
-
-module.exports = GetServersRequest;

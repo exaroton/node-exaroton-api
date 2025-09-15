@@ -1,7 +1,5 @@
-const FileDataRequest = require("./FileDataRequest");
+import FileDataRequest from './FileDataRequest.js'
 
-class DeleteFileDataRequest extends FileDataRequest {
+export default class DeleteFileDataRequest extends FileDataRequest {
     method = "DELETE";
 }
-
-module.exports = DeleteFileDataRequest;

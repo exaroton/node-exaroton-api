@@ -1,6 +1,6 @@
-const ServerRequest = require('./ServerRequest');
+import ServerRequest from './ServerRequest.js'
 
-class ExtendServerStopTimeRequest extends ServerRequest {
+export default class ExtendServerStopTimeRequest extends ServerRequest {
     endpoint = "servers/{id}/extend-time";
     method = "POST";
 
@@ -16,5 +16,3 @@ class ExtendServerStopTimeRequest extends ServerRequest {
         this.data = {time: time};
     }
 }
-
-module.exports = ExtendServerStopTimeRequest;

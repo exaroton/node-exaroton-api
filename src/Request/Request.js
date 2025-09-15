@@ -1,9 +1,10 @@
-const {createReadStream} = require('fs');
-const {createWriteStream} = require("fs");
+import {createReadStream} from 'fs'
+import {createWriteStream} from 'fs'
 
-const Response = require('../Response/Response');
+import Response from '../Response/Response.js'
+import * as stream from "node:stream";
 
-class Request {
+export default class Request {
     /**
      * Request method, e.g. "GET" or "POST"
      *
@@ -63,7 +64,7 @@ class Request {
     /**
      * Optional stream to stream the response body to
      *
-     * @type {stream.Writable|null}
+     * @type {import('stream').Writable|null}
      */
     outputStream = null;
 
@@ -77,7 +78,7 @@ class Request {
     /**
      * Optional stream to read the request body from
      *
-     * @type {stream.Readable|null}
+     * @type {import('stream').Readable|null}
      */
     inputStream = null;
 
@@ -137,11 +138,11 @@ class Request {
     /**
      * Get body for request
      *
-     * @return {FormData|string|ReadStream}
+     * @return {BodyInit}
      */
     getBody() {
         if (this.hasInputStream()) {
-            return this.getInputStream();
+            return stream.Readable.toWeb(this.getInputStream());
         }
 
         if (typeof this.data === "string") {
@@ -172,7 +173,7 @@ class Request {
     }
 
     /**
-     * @return {null|stream.Writable}
+     * @return {null|import('stream').Writable}
      */
     getOutputStream() {
         if (this.outputStream !== null) {
@@ -192,7 +193,7 @@ class Request {
     }
 
     /**
-     * @return {null|stream.Readable}
+     * @return {null|import('stream').Readable}
      */
     getInputStream() {
         if (this.inputStream !== null) {
@@ -266,5 +267,3 @@ class Request {
         return this;
     }
 }
-
-module.exports = Request;

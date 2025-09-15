@@ -1,8 +1,8 @@
-const GetPoolRequest = require("../../Request/Billing/Pool/GetPoolRequest.js");
-const GetPoolMembersRequest = require("../../Request/Billing/Pool/GetPoolMembersRequest.js");
-const GetPoolServersRequest = require("../../Request/Billing/Pool/GetPoolServersRequest.js");
+import GetPoolRequest from '../../Request/Billing/Pool/GetPoolRequest.js'
+import GetPoolMembersRequest from '../../Request/Billing/Pool/GetPoolMembersRequest.js'
+import GetPoolServersRequest from '../../Request/Billing/Pool/GetPoolServersRequest.js'
 
-class Pool {
+export default class Pool {
     /**
      * @type {Client}
      * @private
@@ -133,5 +133,3 @@ class Pool {
         return response.getData();
     }
 }
-
-module.exports = Pool;

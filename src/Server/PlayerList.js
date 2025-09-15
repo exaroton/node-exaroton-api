@@ -1,8 +1,8 @@
-const GetPlayerListEntriesRequest = require('../Request/Server/PlayerLists/GetPlayerListEntriesRequest');
-const PutPlayerListEntriesRequest = require('../Request/Server/PlayerLists/PutPlayerListEntriesRequest');
-const DeletePlayerListEntriesRequest = require('../Request/Server/PlayerLists/DeletePlayerListEntriesRequest');
+import GetPlayerListEntriesRequest from '../Request/Server/PlayerLists/GetPlayerListEntriesRequest.js'
+import PutPlayerListEntriesRequest from '../Request/Server/PlayerLists/PutPlayerListEntriesRequest.js'
+import DeletePlayerListEntriesRequest from '../Request/Server/PlayerLists/DeletePlayerListEntriesRequest.js'
 
-class PlayerList {
+export default class PlayerList {
     /**
      * List name / identifier
      *
@@ -106,5 +106,3 @@ class PlayerList {
         return this.deleteEntries([entry]);
     }
 }
-
-module.exports = PlayerList;
