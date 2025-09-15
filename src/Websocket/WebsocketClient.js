@@ -28,7 +28,7 @@ export default class WebsocketClient extends EventEmitter {
     #server;
 
     /**
-     * @type {WebSocket}
+     * @type {import('ws').WebSocket}
      */
     #websocket;
 
@@ -143,7 +143,7 @@ export default class WebsocketClient extends EventEmitter {
     }
 
     onMessage(rawMessage) {
-        let message = JSON.parse(rawMessage);
+        let message = JSON.parse(rawMessage.toString());
 
         // noinspection FallThroughInSwitchStatementJS
         switch (message.type) {
