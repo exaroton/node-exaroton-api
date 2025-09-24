@@ -1,4 +1,3 @@
-
 const ServerStatus = {
     OFFLINE: 0,
     ONLINE: 1,
@@ -13,4 +12,4 @@ const ServerStatus = {
     PREPARING: 10
 };
 
-module.exports = ServerStatus;
+export default ServerStatus;

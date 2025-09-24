@@ -1,11 +1,9 @@
-const PlayerListRequest = require('./PlayerListRequest');
+import PlayerListRequest from './PlayerListRequest.js'
 
-class PutPlayerListEntriesRequest extends PlayerListRequest {
+export default class PutPlayerListEntriesRequest extends PlayerListRequest {
     method = "PUT";
     constructor(id, name, entries) {
         super(id, name);
         this.data = {entries: entries};
     }
 }
-
-module.exports = PutPlayerListEntriesRequest;

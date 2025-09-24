@@ -1,7 +1,5 @@
-const PlayerListRequest = require('./PlayerListRequest');
+import PlayerListRequest from './PlayerListRequest.js'
 
-class GetPlayerListEntriesRequest extends PlayerListRequest {
+export default class GetPlayerListEntriesRequest extends PlayerListRequest {
 
 }
-
-module.exports = GetPlayerListEntriesRequest;

@@ -1,6 +1,6 @@
-const ServerRequest = require('./ServerRequest');
+import ServerRequest from './ServerRequest.js'
 
-class GetServerOptionRequest extends ServerRequest {
+export default class GetServerOptionRequest extends ServerRequest {
     endpoint = "servers/{id}/options/{option}/";
 
     /**
@@ -23,5 +23,3 @@ class GetServerOptionRequest extends ServerRequest {
         this.setParameter("option", option);
     }
 }
-
-module.exports = GetServerOptionRequest;

@@ -1,7 +1,5 @@
-const FileDataRequest = require("./FileDataRequest");
+import FileDataRequest from './FileDataRequest.js'
 
-class PutFileDataRequest extends FileDataRequest {
+export default class PutFileDataRequest extends FileDataRequest {
     method = "PUT";
 }
-
-module.exports = PutFileDataRequest;

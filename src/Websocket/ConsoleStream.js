@@ -1,6 +1,6 @@
-const Stream = require("./Stream");
+import Stream from './Stream.js'
 
-class ConsoleStream extends Stream {
+export default class ConsoleStream extends Stream {
     #ansiRegex = new RegExp('[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)|(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-ntqry=><~]))', "g");
     name = "console";
     startData = {tail: 0};
@@ -29,5 +29,3 @@ class ConsoleStream extends Stream {
         this.send("command", command);
     }
 }
-
-module.exports = ConsoleStream;

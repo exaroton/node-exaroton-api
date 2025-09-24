@@ -1,8 +1,8 @@
-const GetConfigFileOptionsRequest = require("../../Request/Server/Files/Config/GetConfigFileOptionsRequest");
-const UpdateConfigFileOptionsRequest = require("../../Request/Server/Files/Config/UpdateConfigFileOptionsRequest");
-const ConfigOption = require("./ConfigOption");
+import GetConfigFileOptionsRequest from '../../Request/Server/Files/Config/GetConfigFileOptionsRequest.js'
+import UpdateConfigFileOptionsRequest from '../../Request/Server/Files/Config/UpdateConfigFileOptionsRequest.js'
+import ConfigOption from './ConfigOption.js'
 
-class Config {
+export default class Config {
     /**
      * @type {File}
      */
@@ -111,5 +111,3 @@ class Config {
         return response;
     }
 }
-
-module.exports = Config;

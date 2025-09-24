@@ -1,7 +1,5 @@
-const ServerRequest = require('./ServerRequest');
+import ServerRequest from './ServerRequest.js'
 
-class RestartServerRequest extends ServerRequest {
+export default class RestartServerRequest extends ServerRequest {
     endpoint = "servers/{id}/restart";
 }
-
-module.exports = RestartServerRequest;

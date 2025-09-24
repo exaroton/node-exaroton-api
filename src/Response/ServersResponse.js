@@ -1,7 +1,7 @@
-const Server = require('../Server/Server');
-const ArrayResponse = require("./ArrayResponse.js");
+import Server from '../Server/Server.js'
+import ArrayResponse from './ArrayResponse.js'
 
-class ServersResponse extends ArrayResponse {
+export default class ServersResponse extends ArrayResponse {
     /**
      * @inheritDoc
      */
@@ -9,5 +9,3 @@ class ServersResponse extends ArrayResponse {
         return new Server(this.request.client, item.id).setFromObject(item);
     }
 }
-
-module.exports = ServersResponse;

@@ -1,6 +1,6 @@
-const Request = require('../Request');
+import Request from '../Request.js'
 
-class ServerRequest extends Request {
+export default class ServerRequest extends Request {
     /**
      * Server request constructor
      *
@@ -11,5 +11,3 @@ class ServerRequest extends Request {
         this.setParameter("id", id);
     }
 }
-
-module.exports = ServerRequest;

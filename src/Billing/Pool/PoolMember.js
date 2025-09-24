@@ -1,5 +1,5 @@
 
-class PoolMember {
+export default class PoolMember {
     /**
      * Pool member account ID
      *
@@ -48,5 +48,3 @@ class PoolMember {
         this.isOwner = typeof poolMemberObject.isOwner !== "undefined" ? poolMemberObject.isOwner : null;
     }
 }
-
-module.exports = PoolMember;

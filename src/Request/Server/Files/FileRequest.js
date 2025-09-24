@@ -1,6 +1,6 @@
-const ServerRequest = require('../ServerRequest');
+import ServerRequest from '../ServerRequest.js'
 
-class FileRequest extends ServerRequest {
+export default class FileRequest extends ServerRequest {
     /**
      * FileRequest constructor
      *
@@ -22,5 +22,3 @@ class FileRequest extends ServerRequest {
         return this;
     }
 }
-
-module.exports = FileRequest;

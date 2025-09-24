@@ -1,5 +1,4 @@
-
-class Players {
+export default class Players {
     /**
      * Max amount of players / slots
      *
@@ -32,5 +31,3 @@ class Players {
         this.list = typeof playersObject.list === "object" ? playersObject.list : [];
     }
 }
-
-module.exports = Players;
