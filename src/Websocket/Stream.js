@@ -112,7 +112,7 @@ export default class Stream extends EventEmitter {
     /**
      * Should/can this stream be started
      *
-     * @return {boolean}
+     * @return {Promise<boolean>}
      */
     async shouldBeStarted() {
         return this.#shouldStart && this.startStatuses.includes(await this.#client.getServerStatus());

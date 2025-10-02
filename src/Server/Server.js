@@ -379,7 +379,7 @@ export default class Server extends EventEmitter {
             websocketClient.connect();
         }
         if (!streams) {
-            return;
+            return false;
         }
 
         if (typeof streams === "string") {

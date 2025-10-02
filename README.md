@@ -460,6 +460,32 @@ server.on("heap:heap", function(data) {
 });
 ```
 
+### Management Protocol
+The Minecraft server management protocol introduced in 1.21.9 allows controlling various server settings without
+restarting the server and receiving events from the server. This API client supports proxying this protocol through the
+exaroton websocket connection and using it with the [`mc-server-management`](https://github.com/aternosorg/mc-server-management)
+library.
+
+```js
+// To use it, first subscribe to the `management` stream:
+server.subscribe("management");
+// Then get a connection object from the stream:
+const connection = server.getWebsocketClient().getStream("management").getProxyConnection();
+// And create an object from the management library:
+import {MinecraftServer} from "mc-server-management";
+const mcServer = new MinecraftServer(stream.getProxyConnection());
+
+// Now you can perform requests such as getting the server status:
+let status = await mcServer.getStatus();
+
+// And subscribe to notifications:
+import {Notifications} from "mc-server-management";
+mcServer.on(Notifications.ALLOWLIST_ADDED, data => {
+    console.log("Allowlist added", data);
+});
+```
+
+
 #### Unsubscribe
 You can unsubscribe from one, multiple or all streams using the `server.unsubscribe()` function.
 

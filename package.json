@@ -15,6 +15,7 @@
         "node": ">=22.0.0"
     },
     "dependencies": {
+        "mc-server-management": "^3.0.0",
         "ws": "^8.18.3"
     }
 }

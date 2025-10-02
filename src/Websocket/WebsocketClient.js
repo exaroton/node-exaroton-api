@@ -5,6 +5,7 @@ import ConsoleStream from './ConsoleStream.js'
 import HeapStream from './HeapStream.js'
 import StatsStream from './StatsStream.js'
 import TickStream from './TickStream.js'
+import ServerManagementStream from "./ServerManagementStream.js";
 
 /**
  * Websocket client to connect to the websocket for this server
@@ -81,7 +82,8 @@ export default class WebsocketClient extends EventEmitter {
         "console": ConsoleStream,
         "heap": HeapStream,
         "stats": StatsStream,
-        "tick": TickStream
+        "tick": TickStream,
+        "management": ServerManagementStream,
     };
 
     /**
