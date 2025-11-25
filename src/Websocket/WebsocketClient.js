@@ -120,6 +120,7 @@ export default class WebsocketClient extends EventEmitter {
         this.#websocket.close();
         this.#streams = {};
         clearInterval(this.#reconnectInterval);
+        this.#reconnectInterval = null;
         clearInterval(this.streamRetryInterval);
         this.streamRetryInterval = null;
     }
@@ -127,6 +128,7 @@ export default class WebsocketClient extends EventEmitter {
     onOpen() {
         this.#connected = true;
         clearInterval(this.#reconnectInterval);
+        this.#reconnectInterval = null;
         this.emit('open');
     }
 
@@ -134,7 +136,9 @@ export default class WebsocketClient extends EventEmitter {
         this.emit('close');
         this.#ready = false;
         if (this.autoReconnect && this.#shouldConnect) {
-            this.#reconnectInterval = setInterval(this.connect.bind(this), this.reconnectTimeout);
+            if (!this.#reconnectInterval) {
+                this.#reconnectInterval = setInterval(this.connect.bind(this), this.reconnectTimeout);
+            }
         } else {
             this.#connected = false;
         }
