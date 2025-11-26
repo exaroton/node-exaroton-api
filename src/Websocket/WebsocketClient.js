@@ -108,6 +108,7 @@ export default class WebsocketClient extends EventEmitter {
         if (!this.streamRetryInterval) {
             this.streamRetryInterval = setInterval(this.tryToStartStreams.bind(this), 15000);
         }
+        this.#connected = true;
     }
 
     /**
@@ -122,7 +123,6 @@ export default class WebsocketClient extends EventEmitter {
     }
 
     onOpen() {
-        this.#connected = true;
         this.emit('open');
     }
 
@@ -177,6 +177,7 @@ export default class WebsocketClient extends EventEmitter {
     }
 
     /**
+     * This method returns true if the websocket is connected (or trying to connect).
      * @return {boolean}
      */
     isConnected() {
