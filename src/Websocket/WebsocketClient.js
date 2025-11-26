@@ -102,9 +102,15 @@ export default class WebsocketClient extends EventEmitter {
     }
 
     /**
-     * Connect to websocket
+     * Connect to websocket if not already connected
      */
     connect() {
+        if (!this.#shouldConnect) {
+            this.#connect();
+        }
+    }
+
+    #connect() {
         this.#shouldConnect = true;
         this.#websocket = new WebSocket(this.url, {headers: {authorization: "Bearer " + this.#client.getAPIToken()}});
         this.#websocket.on('open', this.onOpen.bind(this));
@@ -140,7 +146,7 @@ export default class WebsocketClient extends EventEmitter {
         this.emit('close');
         this.#ready = false;
         if (this.autoReconnect && this.#shouldConnect) {
-            this.#reconnectTimeout = setTimeout(this.connect.bind(this), this.reconnectTimeout);
+            this.#reconnectTimeout = setTimeout(this.#connect.bind(this), this.reconnectTimeout);
         } else {
             this.#connected = false;
         }
