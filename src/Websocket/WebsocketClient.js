@@ -51,7 +51,11 @@ export default class WebsocketClient extends EventEmitter {
      */
     reconnectTimeout = 3000;
 
-    #reconnectInterval;
+    /**
+     * Timeout for reconnecting to the websocket
+     * @type {number|null}
+     */
+    #reconnectTimeout = null;
 
     /**
      * @type {boolean}
@@ -98,9 +102,15 @@ export default class WebsocketClient extends EventEmitter {
     }
 
     /**
-     * Connect to websocket
+     * Connect to websocket if not already connected
      */
     connect() {
+        if (!this.#shouldConnect) {
+            this.#connect();
+        }
+    }
+
+    #connect() {
         this.#shouldConnect = true;
         this.#websocket = new WebSocket(this.url, {headers: {authorization: "Bearer " + this.#client.getAPIToken()}});
         this.#websocket.on('open', this.onOpen.bind(this));
@@ -110,6 +120,7 @@ export default class WebsocketClient extends EventEmitter {
         if (!this.streamRetryInterval) {
             this.streamRetryInterval = setInterval(this.tryToStartStreams.bind(this), 15000);
         }
+        this.#connected = true;
     }
 
     /**
@@ -119,14 +130,15 @@ export default class WebsocketClient extends EventEmitter {
         this.#shouldConnect = false;
         this.#websocket.close();
         this.#streams = {};
-        clearInterval(this.#reconnectInterval);
+
+        clearTimeout(this.#reconnectTimeout);
+        this.#reconnectTimeout = null;
+
         clearInterval(this.streamRetryInterval);
         this.streamRetryInterval = null;
     }
 
     onOpen() {
-        this.#connected = true;
-        clearInterval(this.#reconnectInterval);
         this.emit('open');
     }
 
@@ -134,7 +146,7 @@ export default class WebsocketClient extends EventEmitter {
         this.emit('close');
         this.#ready = false;
         if (this.autoReconnect && this.#shouldConnect) {
-            this.#reconnectInterval = setInterval(this.connect.bind(this), this.reconnectTimeout);
+            this.#reconnectTimeout = setTimeout(this.#connect.bind(this), this.reconnectTimeout);
         } else {
             this.#connected = false;
         }
@@ -181,6 +193,7 @@ export default class WebsocketClient extends EventEmitter {
     }
 
     /**
+     * This method returns true if the websocket is connected (or trying to connect).
      * @return {boolean}
      */
     isConnected() {
