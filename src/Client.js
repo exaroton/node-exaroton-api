@@ -113,15 +113,17 @@ export default class Client {
         /** @type {RequestInit} */
         const options = {
             method: request.method,
-            headers: Object.assign({
-                "authorization": "Bearer " + this.#apiToken,
-                "user-agent": this.#userAgent
-            }, request.headers)
         }
 
         if (request.hasBody()) {
             options.body = request.getBody();
         }
+
+        // Set headers after body to allow content-type overrides
+        options.headers = Object.assign({
+            "authorization": "Bearer " + this.#apiToken,
+            "user-agent": this.#userAgent
+        }, request.headers);
 
         let response;
         try {
