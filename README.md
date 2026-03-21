@@ -290,7 +290,7 @@ try {
 ```js
 try {
     // change the content of the file
-    await file.setContent("Hello world!");
+    await file.putContent("Hello world!");
     
     // or upload a local file
     await file.upload("test.txt");
