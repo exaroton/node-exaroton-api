@@ -25,6 +25,13 @@ export default class Request {
     parameters = {};
 
     /**
+     * URL query parameters, appended to the endpoint URL
+     *
+     * @type {{}}
+     */
+    query = {};
+
+    /**
      * HTTP request headers
      *
      * @type {{}}
@@ -102,6 +109,16 @@ export default class Request {
     }
 
     /**
+     * Set a URL query parameter
+     *
+     * @param {string} key
+     * @param {string} value
+     */
+    setQueryParameter(key, value) {
+        this.query[key] = value;
+    }
+
+    /**
      *
      * @param {string} key
      * @param {string} value
@@ -122,6 +139,11 @@ export default class Request {
                 continue;
             }
             endpoint = endpoint.replace("{" + key + "}", this.parameters[key]);
+        }
+
+        const query = new URLSearchParams(this.query).toString();
+        if (query.length > 0) {
+            endpoint += "?" + query;
         }
         return endpoint;
     }

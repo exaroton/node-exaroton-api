@@ -6,6 +6,8 @@ import RequestStatusError from './Error/RequestStatusError.js'
 import RequestBodyError from './Error/RequestBodyError.js'
 import GetServersRequest from './Request/GetServersRequest.js'
 import GetPoolsRequest from './Request/Billing/Pool/GetPoolsRequest.js'
+import CreateServerRequest from './Request/CreateServerRequest.js'
+import GetSoftwareRequest from './Request/Software/GetSoftwareRequest.js'
 
 import packageConfig from '../package.json' with { type: 'json' }
 import Pool from './Billing/Pool/Pool.js'
@@ -174,6 +176,32 @@ export default class Client {
      */
     async getServers() {
         return (await this.request(new GetServersRequest)).getData();
+    }
+
+    /**
+     * Create a new server owned by the current account
+     *
+     * Fails with status code 413 if the account has reached its server limit (see Account.maxServers)
+     *
+     * @param {import('./Request/CreateServerRequest.js').CreateServerOptions} options
+     * @return {Promise<Server>}
+     * @throws {RequestError}
+     */
+    async createServer(options) {
+        const data = (await this.request(new CreateServerRequest(options))).getData();
+        return new Server(this, data.id).setFromObject(data);
+    }
+
+    /**
+     * Get a list of all available software
+     *
+     * @param {string|null} type only list software of this type (e.g. "vanilla")
+     * @param {string|null} launcher only list modpacks of this launcher (e.g. "CurseForge")
+     * @return {Promise<Software[]>}
+     * @throws {RequestError}
+     */
+    async getSoftware(type = null, launcher = null) {
+        return (await this.request(new GetSoftwareRequest(type, launcher))).getData();
     }
 
     /**

@@ -1,6 +1,7 @@
 import Client from "./src/Client.js";
 import Server from "./src/Server/Server.js";
 import Software from "./src/Server/Software.js";
+import SoftwareDetails from "./src/Server/SoftwareDetails.js";
 import ServerStatus from "./src/Server/ServerStatus.js";
 import Request from "./src/Request/Request.js";
 import Response from "./src/Response/Response.js";
@@ -12,6 +13,7 @@ export {
     Client,
     Server,
     Software,
+    SoftwareDetails,
     ServerStatus,
     Request,
     Response,
