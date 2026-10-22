@@ -48,6 +48,24 @@ for(let server of servers) {
 
 Each server object contains the fields and information as listed in the [documentation](https://developers.exaroton.com/#servers-get).
 
+#### Create a new server
+```js
+try {
+    let server = await client.createServer({
+        name: "example",
+        softwareType: "vanilla", // or software: "<software id>"
+        motd: "My cool server!", // optional
+        timezone: "Europe/Berlin", // optional, defaults to UTC
+        region: "eu", // optional, "eu" or "na"
+    });
+    console.log("Created server " + server.address);
+} catch (e) {
+    console.error(e.message);
+}
+```
+If the preferred name is taken, a random name based on it is generated. Creating a server fails if your account
+has reached its server limit (see `account.maxServers`).
+
 #### Create a server object by ID
 ```js
 let server = client.server(id);
@@ -86,6 +104,17 @@ try {
 }
 ```
 *It's important to catch errors, because incorrect calls, e.g. a `server.stop()` when the server is offline will result in an error.*
+
+#### Delete the server
+```js
+try {
+    await server.delete();
+} catch (e) {
+    console.error(e.message);
+}
+```
+*This permanently deletes the server including all of its files. It is only possible for the owner of the server
+and only while the server is offline or crashed.*
 
 #### Execute a server command
 ```js
@@ -352,6 +381,35 @@ Options of type `select` or `multiselect` have a list of possible values.
 ```js
 let options = await config.getOptions();
 console.log(options.get("difficulty").getOptions());
+```
+
+#### Software
+
+##### List available software
+```js
+let software = await client.getSoftware();
+console.log(software);
+
+// Optionally filter by software type and/or launcher
+let vanilla = await client.getSoftware("vanilla");
+let curseForgeModpacks = await client.getSoftware(null, "CurseForge");
+```
+
+##### Get information about installing a software on a server
+```js
+let details = await server.getSoftwareDetails(softwareId);
+console.log(details.name + " " + details.version + " requires a reinstall: " + details.reinstall);
+```
+
+##### Install a software on a server
+```js
+try {
+    let details = await server.getSoftwareDetails(softwareId);
+    // If a reinstall is required, all server files will be deleted
+    await server.installSoftware(softwareId, details.reinstall);
+} catch (e) {
+    console.error(e.message);
+}
 ```
 
 #### Credit pools

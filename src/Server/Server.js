@@ -17,12 +17,16 @@ import GetServerOptionRequest from '../Request/Server/GetServerOptionRequest.js'
 import SetServerOptionRequest from '../Request/Server/SetServerOptionRequest.js'
 import GetPlayerListsRequest from '../Request/Server/PlayerLists/GetPlayerListsRequest.js'
 import ExtendServerStopTimeRequest from '../Request/Server/ExtendServerStopTimeRequest.js'
+import DeleteServerRequest from '../Request/Server/DeleteServerRequest.js'
+import GetServerSoftwareRequest from '../Request/Server/Software/GetServerSoftwareRequest.js'
+import InstallServerSoftwareRequest from '../Request/Server/Software/InstallServerSoftwareRequest.js'
+import SoftwareDetails from './SoftwareDetails.js'
 
 export default class Server extends EventEmitter {
     /**
      * Shorthand to get server status constants
      *
-     * @return {{LOADING: number, STARTING: number, SAVING: number, RESTARTING: number, PENDING: number, PREPARING: number, STOPPING: number, OFFLINE: number, ONLINE: number, CRASHED: number}}
+     * @return {{LOADING: number, STARTING: number, SAVING: number, RESTARTING: number, PENDING: number, PREPARING: number, STOPPING: number, OFFLINE: number, ONLINE: number, CRASHED: number, TRANSFERRING: number}}
      */
     get STATUS() {
         return ServerStatus
@@ -96,6 +100,15 @@ export default class Server extends EventEmitter {
     shared = false;
 
     /**
+     * Permissions of the current account on this server via Share Access
+     *
+     * Always null if the current account owns the server
+     *
+     * @type {string[]|null}
+     */
+    permissions = null;
+
+    /**
      * Server software
      *
      * @type {Software}
@@ -145,6 +158,22 @@ export default class Server extends EventEmitter {
         let response = await this.#client.request(new GetServerRequest(this.id));
         this.setFromObject(response.getData());
         return this;
+    }
+
+    /**
+     * Permanently delete the server including all of its files
+     *
+     * Only possible for the owner of the server and only while the server is offline or crashed
+     *
+     * @return {Promise<Response>}
+     * @throws {RequestError}
+     */
+    async delete() {
+        let response = await this.#client.request(new DeleteServerRequest(this.id));
+        if (this.#websocketClient) {
+            this.#websocketClient.disconnect();
+        }
+        return response;
     }
 
     /**
@@ -205,6 +234,35 @@ export default class Server extends EventEmitter {
      */
     async extendStopTime(time) {
         return this.#client.request(new ExtendServerStopTimeRequest(this.id, time));
+    }
+
+    /**
+     * Get information about installing a specific software on the server
+     *
+     * Check SoftwareDetails.reinstall to see if installing it would delete all server files
+     *
+     * @param {string} softwareId
+     * @return {Promise<SoftwareDetails>}
+     * @throws {RequestError}
+     */
+    async getSoftwareDetails(softwareId) {
+        let response = await this.#client.request(new GetServerSoftwareRequest(this.id, softwareId));
+        return new SoftwareDetails(response.getData());
+    }
+
+    /**
+     * Install a software on the server
+     *
+     * If the software requires a reinstall, reinstall has to be set to true to confirm
+     * that all existing server files will be deleted.
+     *
+     * @param {string} softwareId
+     * @param {boolean} reinstall
+     * @return {Promise<Response>}
+     * @throws {RequestError}
+     */
+    async installSoftware(softwareId, reinstall = false) {
+        return this.#client.request(new InstallServerSoftwareRequest(this.id, softwareId, reinstall));
     }
 
     /**
@@ -436,9 +494,10 @@ export default class Server extends EventEmitter {
         this.host = typeof server.host !== "undefined" ? server.host : null;
         this.port = typeof server.port !== "undefined" ? server.port : null;
         this.shared = typeof server.shared !== "undefined" ? server.shared : null;
+        this.permissions = Array.isArray(server.permissions) ? server.permissions : null;
 
         this.software = null;
-        if (typeof server.software === "object") {
+        if (typeof server.software === "object" && server.software !== null) {
             this.software = new Software(server.software);
         }
 
@@ -466,6 +525,7 @@ export default class Server extends EventEmitter {
             host: this.host,
             port: this.port,
             shared: this.shared,
+            permissions: this.permissions,
             software: this.software,
             players: this.players
         }

@@ -42,12 +42,12 @@ export default class Config {
                 continue;
             }
 
-            let {key, label, type, value, options} = option;
+            let {key, label, type, value, options, min, max, step} = option;
             if (typeof key !== "string" || typeof label !== "string" || typeof type !== "string" || options && !Array.isArray(options)) {
                 continue;
             }
 
-            this.#options.set(key, new ConfigOption(key, label, type, value, options));
+            this.#options.set(key, new ConfigOption(key, label, type, value, options, min ?? null, max ?? null, step ?? null));
             this.#originalValues.set(key, value);
         }
         return this;

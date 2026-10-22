@@ -8,6 +8,13 @@ export default class Account {
     #client;
 
     /**
+     * Unique account ID
+     *
+     * @type {string}
+     */
+    id;
+
+    /**
      * Username
      *
      * @type {string}
@@ -34,6 +41,13 @@ export default class Account {
      * @type {int}
      */
     credits;
+
+    /**
+     * Maximum number of servers this account can own
+     *
+     * @type {int}
+     */
+    maxServers;
 
     /**
      * Account constructor
@@ -63,10 +77,12 @@ export default class Account {
      * @return {this}
      */
     setFromObject(account) {
+        this.id = typeof account.id !== "undefined" ? account.id : null;
         this.name = typeof account.name !== "undefined" ? account.name : null;
         this.email = typeof account.email !== "undefined" ? account.email : null;
         this.verified = typeof account.verified !== "undefined" ? account.verified : null;
         this.credits = typeof account.credits !== "undefined" ? account.credits : null;
+        this.maxServers = typeof account.maxServers !== "undefined" ? account.maxServers : null;
         return this;
     }
 }

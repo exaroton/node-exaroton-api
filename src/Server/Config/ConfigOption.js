@@ -39,6 +39,27 @@ export default class ConfigOption {
     #options;
 
     /**
+     * Minimum allowed value for integer/float options
+     *
+     * @type {number|null}
+     */
+    #min;
+
+    /**
+     * Maximum allowed value for integer/float options
+     *
+     * @type {number|null}
+     */
+    #max;
+
+    /**
+     * Suggested increment for integer/float options (not enforced)
+     *
+     * @type {number|null}
+     */
+    #step;
+
+    /**
      * ConfigOption constructor
      *
      * @param {string} key
@@ -46,13 +67,19 @@ export default class ConfigOption {
      * @param {string} type
      * @param {ConfigOptionValue} value
      * @param {string[]|null} options
+     * @param {number|null} min
+     * @param {number|null} max
+     * @param {number|null} step
      */
-    constructor(key, label, type, value, options = null) {
+    constructor(key, label, type, value, options = null, min = null, max = null, step = null) {
         this.#key = key;
         this.#label = label;
         this.#type = type;
         this.#value = value;
         this.#options = options;
+        this.#min = min;
+        this.#max = max;
+        this.#step = step;
     }
 
     /**
@@ -97,5 +124,26 @@ export default class ConfigOption {
      */
     getOptions() {
         return this.#options;
+    }
+
+    /**
+     * @return {number|null}
+     */
+    getMin() {
+        return this.#min;
+    }
+
+    /**
+     * @return {number|null}
+     */
+    getMax() {
+        return this.#max;
+    }
+
+    /**
+     * @return {number|null}
+     */
+    getStep() {
+        return this.#step;
     }
 }
