@@ -1,4 +1,5 @@
 import GetAccountRequest from '../Request/Account/GetAccountRequest.js'
+import GetAccountTransactionsRequest from '../Request/Account/GetAccountTransactionsRequest.js'
 
 export default class Account {
     /**
@@ -68,6 +69,18 @@ export default class Account {
         let response = await this.#client.request(new GetAccountRequest());
         this.setFromObject(response.getData());
         return this;
+    }
+
+    /**
+     * Get a page of the account transactions (20 per page), newest first
+     *
+     * @param {number} page
+     * @return {Promise<Page<Transaction>>}
+     * @throws {RequestError}
+     */
+    async getTransactions(page = 1) {
+        let response = await this.#client.request(new GetAccountTransactionsRequest(page));
+        return response.getData();
     }
 
     /**

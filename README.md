@@ -37,6 +37,32 @@ console.log("My account is " + account.name + " and I have " + account.credits +
 
 The account object contains the fields and information as listed in the [documentation](https://developers.exaroton.com/#account-get).
 
+#### Paginated lists
+Transactions and backups are returned in pages of 20 items, newest first. Each method takes the page number
+(starting at 1) and returns a [Page](./src/Page/Page.js) object with the fields `items`, `page`, `lastPage` and `total`.
+Pages after the last page are empty.
+```js
+let account = await client.getAccount();
+let page = 1, transactions;
+do {
+    transactions = await account.getTransactions(page++);
+    for (let transaction of transactions.items) {
+        console.log(transaction.type + ": " + transaction.credits);
+    }
+} while (transactions.hasNextPage());
+```
+The same works for `server.getTransactions(page)`, `pool.getTransactions(page)` and `server.getBackups(page)`.
+`credits` are seen from the perspective of the account, server or pool the list belongs to.
+
+#### List regions
+```js
+let regions = await client.getRegions();
+for (let region of regions) {
+    console.log(region.id + ": " + region.name);
+}
+```
+Use the region ID when creating or transferring a server. The region of a server is available as `server.region`.
+
 #### List servers
 ```js
 let servers = await client.getServers();
@@ -56,7 +82,7 @@ try {
         softwareType: "vanilla", // or software: "<software id>"
         motd: "My cool server!", // optional
         timezone: "Europe/Berlin", // optional, defaults to UTC
-        region: "eu", // optional, "eu" or "na"
+        region: "eu", // optional, see client.getRegions()
     });
     console.log("Created server " + server.address);
 } catch (e) {
@@ -194,6 +220,170 @@ try {
 } catch (e) {
     console.error(e.message);
 }
+```
+
+#### Server properties
+Server properties are settings such as automatic stopping and starting. Only properties that are available for the server
+and that you are allowed to change are returned.
+```js
+try {
+    let properties = await server.getProperties();
+    console.log(properties["autostop"], properties["autostop-time"]);
+
+    // only the given properties are changed, either all or none of them
+    properties = await server.setProperties({"autostop": true, "autostop-time": 10});
+} catch (e) {
+    console.error(e.message);
+}
+```
+
+#### Transfer the server to another region
+```js
+try {
+    await server.transfer("na");
+} catch (e) {
+    console.error(e.message);
+}
+```
+The server has to be offline. The transfer runs in the background: the server has the status `TRANSFERRING` while
+its files are copied and returns to its previous status with the new `region` afterwards. Poll `server.get()` or
+listen to the websocket `status` event to see when it's done.
+
+#### Backups
+Backups are stored in backup accounts (e.g. Google Drive, Dropbox or OneDrive) linked to the server.
+Backup accounts can only be linked in the exaroton panel.
+
+##### List backups
+```js
+let backups = await server.getBackups(); // first page, see "Paginated lists"
+console.log(backups.running); // true while a backup is being created or restored
+for (let backup of backups.items) {
+    console.log(backup.id + ": " + backup.name + " (" + backup.status + ")");
+}
+```
+
+##### Create a backup
+```js
+try {
+    let backup = await server.createBackup({
+        name: "Before the update", // optional
+        backupAccount: backupAccountId, // optional, defaults to the first linked backup account
+    });
+    while (backup.isCreating()) {
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        await backup.get();
+    }
+} catch (e) {
+    console.error(e.message);
+}
+```
+The backup is created in the background and has the status `creating` until it is done. If creating the backup fails,
+the backup is deleted, so `backup.get()` fails with status code 404.
+
+##### Rename, restore or delete a backup
+```js
+let backup = server.getBackup(backupId);
+try {
+    await backup.get();
+    await backup.rename("New name"); // an empty name resets it to the default name
+    await backup.restore();
+    await backup.delete();
+} catch (e) {
+    console.error(e.message);
+}
+```
+Restoring a backup replaces the current server files and requires the server to be offline. The restore runs in the
+background, `running` in `server.getBackups()` is `true` until it is done. Don't start the server before that.
+
+##### Backup accounts
+```js
+let accounts = await server.getBackupAccounts();
+for (let account of accounts) {
+    console.log(account.name + " (" + account.provider + "): " + account.storage.used + " / " + account.storage.limit);
+}
+```
+
+##### Automatic backup settings
+```js
+let settings = await server.getBackupSettings();
+console.log(settings.enabled, settings.limit, settings.interval);
+
+// settings that are not included are kept
+settings = await server.setBackupSettings({enabled: true, limit: 10, interval: 86400});
+```
+
+#### Custom domains
+
+##### List domains
+```js
+let domains = await server.getDomains();
+for (let domain of domains) {
+    console.log(domain.domain + ": " + domain.status);
+}
+```
+
+##### Add a domain
+```js
+try {
+    let domain = await server.addDomain("play.example.com");
+    console.log("Set the NS records of your domain to: " + domain.nameservers.join(", "));
+} catch (e) {
+    console.error(e.message);
+}
+```
+The domain stays `pending` until its NS records point to the listed nameservers. Use `domain.check()` to check again
+(at most every 10 seconds).
+
+##### Check, change or remove a domain
+```js
+let domain = server.getDomain(domainId);
+try {
+    await domain.get();
+    await domain.check();
+    await domain.update({protocol: "https", port: 8080});
+    await domain.delete();
+} catch (e) {
+    console.error(e.message);
+}
+```
+
+#### Share Access
+Share your server with other exaroton accounts. The available permissions are listed in the
+[documentation](https://developers.exaroton.com/).
+
+##### List accounts with access
+```js
+let accessList = await server.getAccessList();
+for (let access of accessList) {
+    console.log(access.account.name + ": " + access.permissions.join(", "));
+}
+```
+
+##### Share the server
+```js
+try {
+    let access = await server.addAccess("username", ["server", "stop", "console"]); // permissions default to ["server"]
+} catch (e) {
+    console.error(e.message);
+}
+```
+
+##### Change permissions or remove access
+```js
+let access = server.getAccess(accessId);
+try {
+    await access.get();
+    await access.setPermissions(["server", "stop"]);
+    await access.delete();
+} catch (e) {
+    console.error(e.message);
+}
+```
+
+#### Server transactions
+```js
+let transactions = await server.getTransactions(); // first page, see "Paginated lists"
+console.log(transactions.items);
 ```
 
 #### Player lists
@@ -442,6 +632,12 @@ console.log(members);
 ```js
 let servers = await pool.getServers();
 console.log(servers);
+```
+
+##### Get pool transactions
+```js
+let transactions = await pool.getTransactions(); // first page, see "Paginated lists"
+console.log(transactions.items);
 ```
 
 ### Websocket API

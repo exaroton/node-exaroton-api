@@ -21,6 +21,23 @@ import DeleteServerRequest from '../Request/Server/DeleteServerRequest.js'
 import GetServerSoftwareRequest from '../Request/Server/Software/GetServerSoftwareRequest.js'
 import InstallServerSoftwareRequest from '../Request/Server/Software/InstallServerSoftwareRequest.js'
 import SoftwareDetails from './SoftwareDetails.js'
+import GetServerPropertiesRequest from '../Request/Server/GetServerPropertiesRequest.js'
+import SetServerPropertiesRequest from '../Request/Server/SetServerPropertiesRequest.js'
+import TransferServerRequest from '../Request/Server/TransferServerRequest.js'
+import GetServerTransactionsRequest from '../Request/Server/GetServerTransactionsRequest.js'
+import GetBackupsRequest from '../Request/Server/Backups/GetBackupsRequest.js'
+import CreateBackupRequest from '../Request/Server/Backups/CreateBackupRequest.js'
+import GetBackupAccountsRequest from '../Request/Server/Backups/GetBackupAccountsRequest.js'
+import GetBackupSettingsRequest from '../Request/Server/Backups/GetBackupSettingsRequest.js'
+import UpdateBackupSettingsRequest from '../Request/Server/Backups/UpdateBackupSettingsRequest.js'
+import GetDomainsRequest from '../Request/Server/Domains/GetDomainsRequest.js'
+import AddDomainRequest from '../Request/Server/Domains/AddDomainRequest.js'
+import GetAccessListRequest from '../Request/Server/Access/GetAccessListRequest.js'
+import AddAccessRequest from '../Request/Server/Access/AddAccessRequest.js'
+import Backup from './Backup/Backup.js'
+import BackupSettings from './Backup/BackupSettings.js'
+import Domain from './Domain.js'
+import Access from './Access.js'
 
 export default class Server extends EventEmitter {
     /**
@@ -107,6 +124,13 @@ export default class Server extends EventEmitter {
      * @type {string[]|null}
      */
     permissions = null;
+
+    /**
+     * ID of the region the server is located in (see Client.getRegions())
+     *
+     * @type {string|null}
+     */
+    region = null;
 
     /**
      * Server software
@@ -350,6 +374,220 @@ export default class Server extends EventEmitter {
     }
 
     /**
+     * Get the server properties (e.g. "autostop") as a map of property name to value
+     *
+     * Only properties that are available for this server and that the current account is allowed to change are included.
+     *
+     * @return {Promise<Object.<string, string|number|boolean>>}
+     * @throws {RequestError}
+     */
+    async getProperties() {
+        let response = await this.#client.request(new GetServerPropertiesRequest(this.id));
+        return response.getData();
+    }
+
+    /**
+     * Change one or more server properties
+     *
+     * Properties that are not included are not changed. Either all properties are changed or none.
+     * Returns all properties after the change.
+     *
+     * @param {Object.<string, string|number|boolean>} properties
+     * @return {Promise<Object.<string, string|number|boolean>>}
+     * @throws {RequestError}
+     */
+    async setProperties(properties) {
+        let response = await this.#client.request(new SetServerPropertiesRequest(this.id, properties));
+        return response.getData();
+    }
+
+    /**
+     * Transfer the server to another region (see Client.getRegions())
+     *
+     * The server has to be offline. The transfer runs asynchronously: the server has the status TRANSFERRING
+     * while its files are copied and returns to its previous status with the new region afterwards.
+     *
+     * @param {string} region
+     * @return {Promise<this>}
+     * @throws {RequestError}
+     */
+    async transfer(region) {
+        let response = await this.#client.request(new TransferServerRequest(this.id, region));
+        this.setFromObject(response.getData());
+        return this;
+    }
+
+    /**
+     * Get a page of the server transactions (20 per page), newest first
+     *
+     * @param {number} page
+     * @return {Promise<Page<Transaction>>}
+     * @throws {RequestError}
+     */
+    async getTransactions(page = 1) {
+        let response = await this.#client.request(new GetServerTransactionsRequest(this.id, page));
+        return response.getData();
+    }
+
+    /**
+     * Get a page of the server backups (20 per page), newest first
+     *
+     * BackupPage.running is true while a backup is being created or restored on this server.
+     *
+     * @param {number} page
+     * @return {Promise<BackupPage>}
+     * @throws {RequestError}
+     */
+    async getBackups(page = 1) {
+        let backups = (await this.#client.request(new GetBackupsRequest(this.id, page))).getData();
+        for (let backup of backups.items) {
+            backup.setServer(this);
+        }
+        return backups;
+    }
+
+    /**
+     * Start creating a manual backup
+     *
+     * The backup is created asynchronously and has the status "creating" until it is done.
+     * If creating the backup fails, the backup is deleted.
+     *
+     * @param {import('../Request/Server/Backups/CreateBackupRequest.js').CreateBackupOptions} options
+     * @return {Promise<Backup>}
+     * @throws {RequestError}
+     */
+    async createBackup(options = {}) {
+        let data = (await this.#client.request(new CreateBackupRequest(this.id, options))).getData();
+        return new Backup(data.id).setFromObject(data).setServer(this).setClient(this.#client);
+    }
+
+    /**
+     * Get a backup object by ID
+     *
+     * This doesn't request the backup info yet, use Backup.get() for that.
+     *
+     * @param {string} id
+     * @return {Backup}
+     */
+    getBackup(id) {
+        return new Backup(id).setServer(this).setClient(this.#client);
+    }
+
+    /**
+     * Get the backup accounts linked to the server
+     *
+     * @return {Promise<BackupAccount[]>}
+     * @throws {RequestError}
+     */
+    async getBackupAccounts() {
+        return (await this.#client.request(new GetBackupAccountsRequest(this.id))).getData();
+    }
+
+    /**
+     * Get the automatic backup settings
+     *
+     * @return {Promise<BackupSettings>}
+     * @throws {RequestError}
+     */
+    async getBackupSettings() {
+        let response = await this.#client.request(new GetBackupSettingsRequest(this.id));
+        return new BackupSettings(response.getData());
+    }
+
+    /**
+     * Change the automatic backup settings
+     *
+     * Settings that are not included are kept.
+     *
+     * @param {import('../Request/Server/Backups/UpdateBackupSettingsRequest.js').BackupSettingsOptions} settings
+     * @return {Promise<BackupSettings>}
+     * @throws {RequestError}
+     */
+    async setBackupSettings(settings) {
+        let response = await this.#client.request(new UpdateBackupSettingsRequest(this.id, settings));
+        return new BackupSettings(response.getData());
+    }
+
+    /**
+     * Get the custom domains of the server
+     *
+     * @return {Promise<Domain[]>}
+     * @throws {RequestError}
+     */
+    async getDomains() {
+        let domains = (await this.#client.request(new GetDomainsRequest(this.id))).getData();
+        for (let domain of domains) {
+            domain.setServer(this);
+        }
+        return domains;
+    }
+
+    /**
+     * Add a custom domain to the server
+     *
+     * Set the NS records of the domain to Domain.nameservers to link it.
+     *
+     * @param {string} domain
+     * @return {Promise<Domain>}
+     * @throws {RequestError}
+     */
+    async addDomain(domain) {
+        let data = (await this.#client.request(new AddDomainRequest(this.id, domain))).getData();
+        return new Domain(data.id).setFromObject(data).setServer(this).setClient(this.#client);
+    }
+
+    /**
+     * Get a custom domain object by ID
+     *
+     * This doesn't request the domain info yet, use Domain.get() for that.
+     *
+     * @param {string} id
+     * @return {Domain}
+     */
+    getDomain(id) {
+        return new Domain(id).setServer(this).setClient(this.#client);
+    }
+
+    /**
+     * Get the accounts the server is shared with (without the owner)
+     *
+     * @return {Promise<Access[]>}
+     * @throws {RequestError}
+     */
+    async getAccessList() {
+        let accessList = (await this.#client.request(new GetAccessListRequest(this.id))).getData();
+        for (let access of accessList) {
+            access.setServer(this);
+        }
+        return accessList;
+    }
+
+    /**
+     * Share the server with another exaroton account
+     *
+     * @param {string} username
+     * @param {string[]|null} permissions defaults to ["server"]
+     * @return {Promise<Access>}
+     * @throws {RequestError}
+     */
+    async addAccess(username, permissions = null) {
+        let data = (await this.#client.request(new AddAccessRequest(this.id, username, permissions))).getData();
+        return new Access(data.id).setFromObject(data).setServer(this).setClient(this.#client);
+    }
+
+    /**
+     * Get an access object by ID
+     *
+     * This doesn't request the access info yet, use Access.get() for that.
+     *
+     * @param {string} id
+     * @return {Access}
+     */
+    getAccess(id) {
+        return new Access(id).setServer(this).setClient(this.#client);
+    }
+
+    /**
      * Get all player lists available for the server
      *
      * @returns {Promise<PlayerList[]>}
@@ -495,6 +733,7 @@ export default class Server extends EventEmitter {
         this.port = typeof server.port !== "undefined" ? server.port : null;
         this.shared = typeof server.shared !== "undefined" ? server.shared : null;
         this.permissions = Array.isArray(server.permissions) ? server.permissions : null;
+        this.region = typeof server.region !== "undefined" ? server.region : null;
 
         this.software = null;
         if (typeof server.software === "object" && server.software !== null) {
@@ -526,6 +765,7 @@ export default class Server extends EventEmitter {
             port: this.port,
             shared: this.shared,
             permissions: this.permissions,
+            region: this.region,
             software: this.software,
             players: this.players
         }

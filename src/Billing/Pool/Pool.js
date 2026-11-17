@@ -1,6 +1,7 @@
 import GetPoolRequest from '../../Request/Billing/Pool/GetPoolRequest.js'
 import GetPoolMembersRequest from '../../Request/Billing/Pool/GetPoolMembersRequest.js'
 import GetPoolServersRequest from '../../Request/Billing/Pool/GetPoolServersRequest.js'
+import GetPoolTransactionsRequest from '../../Request/Billing/Pool/GetPoolTransactionsRequest.js'
 
 export default class Pool {
     /**
@@ -130,6 +131,18 @@ export default class Pool {
      */
     async getServers() {
         let response = await this.#client.request(new GetPoolServersRequest(this.id));
+        return response.getData();
+    }
+
+    /**
+     * Get a page of the pool transactions (20 per page), newest first
+     *
+     * @param {number} page
+     * @return {Promise<Page<Transaction>>}
+     * @throws {RequestError}
+     */
+    async getTransactions(page = 1) {
+        let response = await this.#client.request(new GetPoolTransactionsRequest(this.id, page));
         return response.getData();
     }
 }
