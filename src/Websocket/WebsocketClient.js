@@ -128,7 +128,7 @@ export default class WebsocketClient extends EventEmitter {
      */
     disconnect() {
         this.#shouldConnect = false;
-        this.#websocket.close();
+        this.#websocket?.close();
         this.#streams = {};
 
         clearTimeout(this.#reconnectTimeout);

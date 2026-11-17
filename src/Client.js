@@ -8,6 +8,7 @@ import GetServersRequest from './Request/GetServersRequest.js'
 import GetPoolsRequest from './Request/Billing/Pool/GetPoolsRequest.js'
 import CreateServerRequest from './Request/CreateServerRequest.js'
 import GetSoftwareRequest from './Request/Software/GetSoftwareRequest.js'
+import GetRegionsRequest from './Request/Region/GetRegionsRequest.js'
 
 import packageConfig from '../package.json' with { type: 'json' }
 import Pool from './Billing/Pool/Pool.js'
@@ -202,6 +203,16 @@ export default class Client {
      */
     async getSoftware(type = null, launcher = null) {
         return (await this.request(new GetSoftwareRequest(type, launcher))).getData();
+    }
+
+    /**
+     * Get a list of all regions servers can be located in
+     *
+     * @return {Promise<Region[]>}
+     * @throws {RequestError}
+     */
+    async getRegions() {
+        return (await this.request(new GetRegionsRequest)).getData();
     }
 
     /**
